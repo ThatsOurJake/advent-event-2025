@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: base
+    volumes:
+      - $PWD/app:/app/app
+      - $PWD/public:/app/public
+    ports:
+      - 3000:3000
+    command: ["pnpm", "dev"]
+  redis:
+    image: redis:6.2.20
+    volumes:
+      - $PWD/redis:/data
+    ports:
+      - 6379:6379
+  mongo:
+    image: mongo:8.2.1
+    volumes:
+      - $PWD/mongo:/data/db
+    ports:
+      - 27017:27017

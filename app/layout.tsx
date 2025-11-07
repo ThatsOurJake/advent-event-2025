@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
 });
 
@@ -24,10 +19,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${openSans.variable} antialiased`}>
+        <div className="bg-stone-400 min-w-screen min-h-screen">
+          <div className="container mx-auto py-4">
+            <div className="w-full py-2 bg-red-200 rounded border-2">
+              <div className="flex gap-x-2 justify-center">
+                <p className="p-1 text-center">
+                  <span className="font-bold">Elf Faction:</span> Ruddy Reds
+                </p>
+                <p className="p-1">|</p>
+                <p className="p-1 text-center">
+                  <span className="font-bold">Action points left:</span> 3
+                </p>
+                <p className="p-1">|</p>
+                <p className="p-1 text-center">
+                  <span className="font-bold">Teams current score:</span> 3
+                </p>
+              </div>
+            </div>
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   );
