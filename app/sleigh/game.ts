@@ -10,7 +10,7 @@ let CATCH_ZONE_HEIGHT = 0;
 
 // Bumper pattern types
 export const validBumperPatterns = ["wavy", "zigzag", "line", "semi"] as const;
-type BumperPattern = typeof validBumperPatterns[number];
+type BumperPattern = (typeof validBumperPatterns)[number];
 
 // Current pattern (can be changed externally)
 let currentPattern: BumperPattern = "wavy";
@@ -56,7 +56,7 @@ const create: Phaser.Types.Scenes.SceneCreateCallback = function () {
     // Drop zone: 13%, Obstacle zone: 67%, Catch zone: 20%
     DROP_ZONE_HEIGHT = Math.floor(GAME_HEIGHT * 0.13);
     OBSTACLE_ZONE_HEIGHT = Math.floor(GAME_HEIGHT * 0.67);
-    CATCH_ZONE_HEIGHT = Math.floor(GAME_HEIGHT * 0.20);
+    CATCH_ZONE_HEIGHT = Math.floor(GAME_HEIGHT * 0.2);
   }
 
   // Enable physics
@@ -74,7 +74,7 @@ const create: Phaser.Types.Scenes.SceneCreateCallback = function () {
     0,
     DROP_ZONE_HEIGHT + OBSTACLE_ZONE_HEIGHT,
     GAME_WIDTH,
-    DROP_ZONE_HEIGHT + OBSTACLE_ZONE_HEIGHT
+    DROP_ZONE_HEIGHT + OBSTACLE_ZONE_HEIGHT,
   );
 
   // Create falling snowflakes for Christmas atmosphere
@@ -86,7 +86,8 @@ const create: Phaser.Types.Scenes.SceneCreateCallback = function () {
   // Create catcher with image sprite and rectangular collision zone
   const catcherWidth = 80; // Total collision zone width (same as before)
   const catcherHeight = 20; // Total collision zone height (same as before)
-  const catcherY = DROP_ZONE_HEIGHT + OBSTACLE_ZONE_HEIGHT + (CATCH_ZONE_HEIGHT / 2);
+  const catcherY =
+    DROP_ZONE_HEIGHT + OBSTACLE_ZONE_HEIGHT + CATCH_ZONE_HEIGHT / 2;
 
   // Create invisible rectangle for collision detection
   catcherSquare = scene.add.rectangle(
@@ -95,7 +96,7 @@ const create: Phaser.Types.Scenes.SceneCreateCallback = function () {
     catcherWidth,
     catcherHeight,
     0x00ff00,
-    0 // Fully transparent
+    0, // Fully transparent
   );
   scene.physics.add.existing(catcherSquare, true); // true = immovable
 
@@ -106,7 +107,11 @@ const create: Phaser.Types.Scenes.SceneCreateCallback = function () {
   // Mouse/pointer movement for catcher
   scene.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
     if (catcherSquare && catcherSprite && inputEnabled) {
-      const newX = Phaser.Math.Clamp(pointer.x, catcherWidth / 2, GAME_WIDTH - catcherWidth / 2);
+      const newX = Phaser.Math.Clamp(
+        pointer.x,
+        catcherWidth / 2,
+        GAME_WIDTH - catcherWidth / 2,
+      );
 
       // Update both the collision rectangle and sprite
       catcherSquare.x = newX;
@@ -158,7 +163,8 @@ const update: Phaser.Types.Scenes.SceneUpdateCallback = function () {
 
   // Check if square has passed the catch zone (missed)
   // Trigger miss if present goes below the catch zone
-  const catchZoneBottom = DROP_ZONE_HEIGHT + OBSTACLE_ZONE_HEIGHT + CATCH_ZONE_HEIGHT;
+  const catchZoneBottom =
+    DROP_ZONE_HEIGHT + OBSTACLE_ZONE_HEIGHT + CATCH_ZONE_HEIGHT;
   if (fallingSquare.y > catchZoneBottom) {
     handleMissed(scene);
   }
@@ -189,13 +195,13 @@ function createSnowflakes(scene: Phaser.Scene) {
       y: GAME_HEIGHT + 50,
       x: x + horizontalDrift,
       duration: fallDuration,
-      ease: 'Linear',
+      ease: "Linear",
       repeat: -1, // Infinite loop
       onRepeat: () => {
         // Reset to top with new random position
         snowflake.x = Phaser.Math.Between(0, GAME_WIDTH);
         snowflake.y = -20;
-      }
+      },
     });
 
     // Add gentle rotation
@@ -203,9 +209,9 @@ function createSnowflakes(scene: Phaser.Scene) {
       targets: snowflake,
       rotation: Phaser.Math.FloatBetween(-Math.PI * 2, Math.PI * 2),
       duration: Phaser.Math.Between(5000, 10000),
-      ease: 'Linear',
+      ease: "Linear",
       repeat: -1,
-      yoyo: true
+      yoyo: true,
     });
   }
 }
@@ -290,13 +296,16 @@ function createBumperPattern(scene: Phaser.Scene, pattern: BumperPattern) {
             rowIndex = rows - 1; // Bottom row (valleys)
           }
 
-          const y = obstacleZoneTop + (zoneHeight / (rows + 1)) * (rowIndex + 1);
+          const y =
+            obstacleZoneTop + (zoneHeight / (rows + 1)) * (rowIndex + 1);
           const x = wStart + (wWidth / (pointsPerW - 1)) * point;
 
           // Check if this position is too close to any existing bumper
           let tooClose = false;
           for (const placed of placedBumpers) {
-            const distance = Math.sqrt((x - placed.x) ** 2 + (y - placed.y) ** 2);
+            const distance = Math.sqrt(
+              (x - placed.x) ** 2 + (y - placed.y) ** 2,
+            );
             if (distance < minSpacing) {
               tooClose = true;
               break;
@@ -383,10 +392,20 @@ function startGame(scene: Phaser.Scene) {
 
   // Create falling square at random x position in drop zone
   const squareSize = 30;
-  const randomX = Phaser.Math.Between(squareSize / 2 + 10, GAME_WIDTH - squareSize / 2 - 10);
+  const randomX = Phaser.Math.Between(
+    squareSize / 2 + 10,
+    GAME_WIDTH - squareSize / 2 - 10,
+  );
 
   // Create invisible rectangle for physics
-  fallingSquare = scene.add.rectangle(randomX, 50, squareSize, squareSize, 0xffff00, 0);
+  fallingSquare = scene.add.rectangle(
+    randomX,
+    50,
+    squareSize,
+    squareSize,
+    0xffff00,
+    0,
+  );
   scene.physics.add.existing(fallingSquare);
 
   // Create visible sprite
@@ -425,7 +444,7 @@ function startGame(scene: Phaser.Scene) {
         if (index > -1) {
           bumpers.splice(index, 1);
         }
-      }
+      },
     );
   });
 
@@ -435,7 +454,7 @@ function startGame(scene: Phaser.Scene) {
     catcherSquare as Phaser.GameObjects.Rectangle,
     () => {
       handleCaught(scene);
-    }
+    },
   );
 }
 

@@ -4,9 +4,12 @@ services:
       dockerfile: Dockerfile
       context: .
       target: base
+    env_file:
+      - .env.local
     volumes:
       - $PWD/app:/app/app
       - $PWD/public:/app/public
+      - $PWD/middleware.ts:/app/middleware.ts
     ports:
       - 3000:3000
     command: ["pnpm", "dev"]
