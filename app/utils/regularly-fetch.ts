@@ -3,7 +3,7 @@ export type FetchCallback<T> = (errored: boolean, resp?: T, error?: Error) => vo
 export const regularlyFetch = <T>(url: string, interval: number, callback: FetchCallback<T>): number => {
   let isFetching = false;
 
-  return window.setInterval(async () => {
+  const initialFetch = async () => {
     if (isFetching) {
       return;
     }
@@ -19,5 +19,9 @@ export const regularlyFetch = <T>(url: string, interval: number, callback: Fetch
     }
 
     isFetching = false;
-  }, interval);
+  }
+
+  initialFetch();
+
+  return window.setInterval(initialFetch, interval);
 };

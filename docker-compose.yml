@@ -10,6 +10,7 @@ services:
       - $PWD/app:/app/app
       - $PWD/public:/app/public
       - $PWD/middleware.ts:/app/middleware.ts
+      - $PWD/instrumentation.ts:/app/instrumentation.ts
     ports:
       - 3000:3000
     command: ["pnpm", "dev"]

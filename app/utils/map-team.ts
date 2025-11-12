@@ -1,4 +1,4 @@
-import type { teams } from "../data/get-user";
+import type { teams } from "@/app/shared-types";
 
 export const mapTeamToName = (team: teams) => {
   if (team === "red") {

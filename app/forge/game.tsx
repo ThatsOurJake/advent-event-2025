@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { AppContext } from "../components/page-wrapper";
 import { rngSeeded } from "../utils/random";
 
 const BeatMarker = ({
@@ -42,18 +50,30 @@ interface ForgeGameResult {
   passed: boolean;
 }
 
-const ForgeGame = () => {
+interface ForgeGameProps {
+  oreStored: number;
+}
+
+const ForgeGame = ({ oreStored }: ForgeGameProps) => {
+  const {
+    user: {
+      game: { actionPoints },
+    },
+    decreaseActionPoints,
+  } = useContext(AppContext);
+
   const beatMap = useMemo(() => generateBeatMap(), []);
   const duration = 3000;
   const initialDelay = 1000;
   const dashDelay = 500;
-  const accuracyWindow = 300;
+  const accuracyWindow = 400;
   const keyFramePercentage = 0.15; // This is the keyframe percentage in CSS animation
   const minAccuracyForWinning = 60;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [played, setPlayed] = useState(false);
   const [result, setResult] = useState<ForgeGameResult>();
+  const [cannotStartForge, setCannotStartForge] = useState<boolean>(false);
 
   const hitTimings = useRef<number[]>([]);
 
@@ -91,14 +111,32 @@ const ForgeGame = () => {
   const startTime = useRef<number | null>(null);
   const hitTimes = useRef<number[]>([]);
 
-  const onStart = useCallback(() => {
-    setIsPlaying(true);
+  const onStart = useCallback(async () => {
+    const res = await fetch("/api/game", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        game: "forge",
+        action: "start",
+      }),
+    });
+
+    const data = await res.json();
+
     setPlayed(true);
 
-    document.getElementById("forge-back")?.classList.add("fire-glow");
+    if (data.success) {
+      setIsPlaying(true);
+      decreaseActionPoints();
+      document.getElementById("forge-back")?.classList.add("fire-glow");
+      startTime.current = performance.now();
+      return;
+    }
 
-    startTime.current = performance.now();
-  }, []);
+    setCannotStartForge(true);
+  }, [decreaseActionPoints]);
 
   const calcAccuracy = useCallback(() => {
     const hits = hitTimes.current.map((hitTime) => {
@@ -160,8 +198,22 @@ const ForgeGame = () => {
 
     const accuracy = calcAccuracy();
 
+    const passed = accuracy >= minAccuracyForWinning;
+
     setResult({
-      passed: accuracy >= minAccuracyForWinning,
+      passed,
+    });
+
+    fetch("/api/game", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        game: "forge",
+        action: "end",
+        passed,
+      }),
     });
   }, [calcAccuracy]);
 
@@ -217,22 +269,43 @@ const ForgeGame = () => {
             onClick={onZoneClick}
           />
         </div>
-        <button
-          className="py-2 w-full border-2 rounded bg-amber-300 cursor-pointer enabled:hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-50 font-bold"
-          type="button"
-          onClick={onStart}
-          disabled={played}
-        >
-          Heat the Forge!
-        </button>
-        <p className="my-1 text-center text-sm">
-          Smelting Accuracy: <span id="forge-accuracy">0%</span>
-        </p>
-        <p className="text-sm italic mt-2 text-center">
-          Heating the forge will consume 1 action point, you will need an
-          accuracy of {`>=${minAccuracyForWinning}%`} to successfully smelt the
-          ore.
-        </p>
+        {played && cannotStartForge && (
+          <p className="my-2 text-center">
+            You tried starting the forge but looks like there is not enough ore
+            left in storage
+          </p>
+        )}
+        {actionPoints > 0 && oreStored > 0 && (
+          <>
+            <button
+              className="py-2 w-full border-2 rounded bg-amber-300 cursor-pointer enabled:hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-50 font-bold"
+              type="button"
+              onClick={onStart}
+              disabled={played}
+            >
+              Heat the Forge!
+            </button>
+            <p className="my-1 text-center text-sm">
+              Smelting Accuracy: <span id="forge-accuracy">0%</span>
+            </p>
+            <p className="text-sm italic mt-2 text-center">
+              Heating the forge will consume 1 action point, you will need an
+              accuracy of {`>=${minAccuracyForWinning}%`} to successfully smelt
+              the ore.
+            </p>
+          </>
+        )}
+        {actionPoints === 0 && (
+          <p className="my-1 text-center">
+            You do not have enough action points to complete this task.
+          </p>
+        )}
+        {actionPoints > 0 && oreStored === 0 && (
+          <p className="my-1 text-center">
+            There is not enough ore in storage to smelt, visit the mines to
+            gather more.
+          </p>
+        )}
       </div>
       {result && (
         <section className="w-full rounded-md bg-white p-2 border-2 mb-2 text-center">

@@ -10,3 +10,13 @@ export const KEY_GIFT_WRAPPED = 'gift_wrapped';
 export const KEY_GIFT_STORED = 'gift_stored';
 
 export const KEY_SCORE = 'score';
+
+export const VALID_LOCATIONS_ARR = [
+  "mine",
+  "forge",
+  "wrap_station",
+  "sleigh",
+] as const;
+
+export const USER_COLLECTION = "users";
+export const TEAM_COLLECTION = "teams";

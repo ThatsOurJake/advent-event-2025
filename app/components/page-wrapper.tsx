@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext } from "react";
+import { createContext, useCallback, useState } from "react";
 import type { User } from "../data/get-user";
 import { mapTeamToName, type ThemeColours } from "../utils/map-team";
 import { CoreStatsList } from "./core-stats-list";
@@ -12,7 +12,9 @@ interface PageWrapperProps {
   children: React.ReactNode;
 }
 
-type AppContextProps = Omit<PageWrapperProps, "children">;
+type AppContextProps = Omit<PageWrapperProps, "children"> & {
+  decreaseActionPoints: () => void;
+};
 
 export const AppContext = createContext<AppContextProps>({} as AppContextProps);
 
@@ -22,12 +24,21 @@ export const PageWrapper = ({
   teamScore,
   children,
 }: PageWrapperProps) => {
+  const [actionPoints, setActionPoints] = useState<number>(
+    user.game.actionPoints,
+  );
+
+  const decreaseActionPoints = useCallback(() => {
+    setActionPoints(actionPoints - 1);
+  }, [actionPoints]);
+
   return (
     <AppContext
       value={{
         theme,
         user,
         teamScore,
+        decreaseActionPoints,
       }}
     >
       <div className="flex flex-row my-4">
@@ -56,7 +67,7 @@ export const PageWrapper = ({
             </p>
             <p className="text-sm text-center">
               <span className="font-bold">Action points left:</span>{" "}
-              {user.game.actionPoints}
+              {actionPoints}
             </p>
             <p className="text-sm text-center">
               <span className="font-bold">Teams current score:</span>{" "}

@@ -1,4 +1,5 @@
 import type { NextApiRequest } from "next";
+import { VALID_LOCATIONS_ARR } from "../../../constants";
 import redis from "../../../services/redis";
 
 const LOC_MINE_KEY = "location:mine";
@@ -15,12 +16,6 @@ export interface GetLocationStatsResp {
   sleigh: number;
 }
 
-const VALID_LOCATIONS_ARR = [
-  "mine",
-  "forge",
-  "wrap_station",
-  "sleigh",
-] as const;
 export type validLocations = (typeof VALID_LOCATIONS_ARR)[number];
 
 export async function GET(
@@ -38,16 +33,19 @@ export async function GET(
     ]);
 
   const resp: GetLocationStatsResp = {
-    mines: parseInt(peopleInMine || "0", 10),
-    forge: parseInt(peopleInForge || "0", 10),
-    wrappingStation: parseInt(peopleInWrappingStation || "0", 10),
-    sleigh: parseInt(peopleInSleigh || "0", 10),
+    mines: Math.max(0, parseInt(peopleInMine || "0", 10)),
+    forge: Math.max(0, parseInt(peopleInForge || "0", 10)),
+    wrappingStation: Math.max(0, parseInt(peopleInWrappingStation || "0", 10)),
+    sleigh: Math.max(0, parseInt(peopleInSleigh || "0", 10)),
   };
 
   return Response.json(resp);
 }
 
-export async function PUT(req: Request, { params }: { params: Promise<{ team: string }> }) {
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ team: string }> },
+) {
   const { team } = await params;
   const payload: { location: string } = await req.json();
 
@@ -73,7 +71,10 @@ export async function PUT(req: Request, { params }: { params: Promise<{ team: st
   });
 }
 
-export async function DELETE(req: Request, { params }: { params: Promise<{ team: string }> }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ team: string }> },
+) {
   const { team } = await params;
   const payload: { location: string } = await req.json();
 

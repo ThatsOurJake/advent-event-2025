@@ -1,7 +1,5 @@
-import { KEY_GIFT_STORED, KEY_GIFT_WRAPPED, KEY_MOUND_COLLECTED, KEY_MOUND_STORED, KEY_ORE_MINED, KEY_ORE_STORED } from "../constants";
-import redis from "../services/redis";
-import { constructTeamKey } from "../utils/construct-team-key";
-import type { User } from "./get-user";
+import type { teams } from "../shared-types";
+import { getTeam } from "./update-team";
 
 export interface CoreStats {
   ore: {
@@ -18,37 +16,14 @@ export interface CoreStats {
   };
 }
 
-export const getCoreStats = async (team: string): Promise<CoreStats> => {
-  const [
-    oreMined,
-    oreStored,
-    moundCollected,
-    moundStored,
-    giftsWrapped,
-    giftsStored,
-  ] = await Promise.all([
-    redis.get(constructTeamKey(team, KEY_ORE_MINED)),
-    redis.get(constructTeamKey(team, KEY_ORE_STORED)),
-    redis.get(constructTeamKey(team, KEY_MOUND_COLLECTED)),
-    redis.get(constructTeamKey(team, KEY_MOUND_STORED)),
-    redis.get(constructTeamKey(team, KEY_GIFT_WRAPPED)),
-    redis.get(constructTeamKey(team, KEY_GIFT_STORED)),
-  ]);
+// TODO: I think I want this to be read from mongo as it'll slow down redis, we will also store it in redis
+export const getCoreStats = async (team: teams): Promise<CoreStats | null> => {
+  const teamDB = await getTeam(team)!;
 
+  if (!teamDB) {
+    return null;
+  }
 
-  return {
-    ore: {
-      mined: Number(oreMined) || 0,
-      stored: Number(oreStored) || 0,
-    },
-    giftMounds: {
-      collected: Number(moundCollected) || 0,
-      stored: Number(moundStored) || 0,
-    },
-    wrappedGifts: {
-      wrapped: Number(giftsWrapped) || 0,
-      stored: Number(giftsStored) || 0,
-    },
-  };
+  const { stats } = teamDB;
+  return stats;
 };
-

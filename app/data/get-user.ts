@@ -1,15 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { WithId } from "mongodb";
-import { STARTING_AP } from "../constants";
+import { STARTING_AP, USER_COLLECTION } from "../constants";
 import { client, connect } from "../services/mongo";
 import redis from "../services/redis";
+import type { teams } from "../shared-types";
 
 const assignTeamScript = fs.readFileSync(
   path.resolve("app", "lua", "assign_team.lua"),
 );
-
-export type teams = "red" | "green" | "blue";
 
 export interface User {
   userId: string;
@@ -27,7 +26,6 @@ interface CreateUserOpts {
   name: string;
 }
 
-const USER_COLLECTION = "users";
 
 export const createUser = async ({ name, sub }: CreateUserOpts) => {
   await connect();
@@ -57,7 +55,7 @@ export const createUser = async ({ name, sub }: CreateUserOpts) => {
   console.error(`Failed to insert user`);
 };
 
-export const getUser = async (sub: string): Promise<User> => {
+export const getUser = async (sub: string): Promise<User | null> => {
   await connect();
 
   const db = client.db();
@@ -67,14 +65,13 @@ export const getUser = async (sub: string): Promise<User> => {
     userId: sub,
   })) as WithId<User>;
 
+  if (!user) {
+    return null;
+  }
+
   return {
     userId: user.userId,
-    details: {
-      name: user.details.name,
-    },
-    game: {
-      actionPoints: user.game.actionPoints,
-      team: user.game.team,
-    },
+    details: user.details,
+    game: user.game,
   };
 };

@@ -1,14 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { AppContext } from "../components/page-wrapper";
 import { rngSeeded } from "../utils/random";
+import { reportGameResult } from "../utils/report-game-result";
 
 interface MiningGameResult {
   didMineOre: boolean;
 }
 
 const MiningGame = () => {
+  const {
+    decreaseActionPoints,
+    user: {
+      game: { actionPoints },
+    },
+  } = useContext(AppContext);
   const isPlaying = useRef<boolean>(true);
   const [result, setResult] = useState<MiningGameResult | null>(null);
 
@@ -98,11 +106,15 @@ const MiningGame = () => {
         indicatorRect.left + middle >= minebarZoneRect.left &&
         indicatorRect.right - middle <= minebarZoneRect.right;
 
-      setResult({
+      const result = {
         didMineOre: isInZone,
-      });
+      };
+
+      setResult(result);
+      decreaseActionPoints();
+      reportGameResult("mine", result);
     }
-  }, []);
+  }, [decreaseActionPoints]);
 
   return (
     <div className="flex flex-col items-center w-md md:w-lg mx-auto">
@@ -136,17 +148,27 @@ const MiningGame = () => {
         </section>
       </div>
       <section className="w-full rounded-md bg-white p-2 border-2 mb-2">
-        <p className="mb-2 text-center">
-          Swinging your pick will consume 1 action point so ensure you get it in
-          the green zone!
-        </p>
-        <button
-          className="py-2 w-full border-2 rounded bg-amber-300 cursor-pointer hover:bg-amber-200"
-          type="button"
-          onClick={onPickSwing}
-        >
-          Swing Pickaxe!
-        </button>
+        {actionPoints > 0 && (
+          <>
+            <p className="mb-2 text-center">
+              Swinging your pick will consume 1 action point so ensure you get
+              it in the green zone!
+            </p>
+            <button
+              className="py-2 w-full border-2 rounded bg-amber-300 cursor-pointer hover:bg-amber-200"
+              type="button"
+              onClick={onPickSwing}
+            >
+              Swing Pickaxe!
+            </button>
+          </>
+        )}
+        {actionPoints === 0 && (
+          <p className="text-center">
+            You have ran out of action points for today - please come back
+            tomorrow once you've had a recovered.
+          </p>
+        )}
       </section>
       {result && (
         <section className="w-full rounded-md bg-white p-2 border-2 mb-2 text-center">
