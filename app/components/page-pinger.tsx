@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import type { validLocations } from "../api/location-stats/[team]/route";
 import { AppContext } from "./page-wrapper";
 
@@ -17,7 +17,7 @@ export const PagePinger = ({ location }: PagePingerProps) => {
 
   useEffect(() => {
     const send = (method: "PUT" | "DELETE") => {
-      fetch(`/api/location-stats/${team}`, {
+      return fetch(`/api/location-stats/${team}`, {
         body: JSON.stringify({
           location,
         }),
@@ -29,6 +29,12 @@ export const PagePinger = ({ location }: PagePingerProps) => {
     };
 
     send("PUT");
+
+    window.addEventListener(
+      "reload",
+      () => send("DELETE").finally(() => window.location.reload()),
+      { once: true },
+    );
 
     return () => {
       send("DELETE");

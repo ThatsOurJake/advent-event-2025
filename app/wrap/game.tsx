@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { AppContext } from "../components/page-wrapper";
 import { rngSeeded } from "../utils/random";
 
 type ValidValues =
@@ -23,10 +24,11 @@ interface Selection {
 }
 
 interface WrappingGameResult {
+  notEnoughMounds?: boolean;
   passedQA: boolean;
 }
 
-const determineStartingGift = (): Selection => {
+const determineStartingGift = (actionPoints: number): Selection => {
   const bowItems: ValidValues[] = ["bow-big", "bow-small", "bow-no"];
   const ribItems: ValidValues[] = ["rib-gold", "rib-red", "rib-silver"];
   const paperItems: ValidValues[] = [
@@ -36,9 +38,12 @@ const determineStartingGift = (): Selection => {
   ];
   const baseSeed = new Date().toDateString();
 
-  const bowIndex = rngSeeded(1, bowItems.length, `${baseSeed}-bow`) - 1;
-  const ribIndex = rngSeeded(1, bowItems.length, `${baseSeed}-rib`) - 1;
-  const paperIndex = rngSeeded(1, bowItems.length, `${baseSeed}-pap`) - 1;
+  const bowIndex =
+    rngSeeded(1, bowItems.length, `${baseSeed}-${actionPoints}-bow`) - 1;
+  const ribIndex =
+    rngSeeded(1, bowItems.length, `${baseSeed}-${actionPoints}-rib`) - 1;
+  const paperIndex =
+    rngSeeded(1, bowItems.length, `${baseSeed}-${actionPoints}-pap`) - 1;
 
   return {
     bow: bowItems[bowIndex],
@@ -47,7 +52,18 @@ const determineStartingGift = (): Selection => {
   };
 };
 
-const WrappingGame = () => {
+interface WrappingGameProps {
+  moundsStored: number;
+}
+
+const WrappingGame = ({ moundsStored }: WrappingGameProps) => {
+  const {
+    user: {
+      game: { actionPoints },
+    },
+    decreaseActionPoints,
+  } = useContext(AppContext);
+
   const [currentSelection, setCurrentSelection] = useState<Selection>({
     bow: "bow-no",
     paper: "blank",
@@ -57,7 +73,10 @@ const WrappingGame = () => {
   const [result, setResult] = useState<WrappingGameResult | null>(null);
 
   const isPlaying = useRef<boolean>(true);
-  const targetSelection = useMemo(() => determineStartingGift(), []);
+  const targetSelection = useMemo(
+    () => determineStartingGift(actionPoints),
+    [actionPoints],
+  );
 
   const onBtnClick = useCallback(
     (value: ValidValues) => {
@@ -159,7 +178,7 @@ const WrappingGame = () => {
     };
   }, []);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!isPlaying.current) {
       return;
     }
@@ -185,8 +204,29 @@ const WrappingGame = () => {
       passedQA,
     };
 
-    setResult(gameResult);
-  }, [currentSelection, targetSelection]);
+    const res = await fetch("/api/game", {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        game: "wrap_station",
+        passed: passedQA,
+      }),
+      method: "POST",
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      setResult(gameResult);
+      decreaseActionPoints();
+    } else {
+      setResult({
+        notEnoughMounds: true,
+        passedQA: false,
+      });
+    }
+  }, [currentSelection, targetSelection, decreaseActionPoints]);
 
   const outputImage = determineImage(currentSelection);
   const inputImage = determineImage(targetSelection);
@@ -359,17 +399,31 @@ const WrappingGame = () => {
           </div>
         </section>
         <section className="mt-2">
-          <p className="mb-2 text-center text-sm">
-            Sending the gift to the QA elves consume 1 action point so ensure
-            your gift matches the reference image!
-          </p>
-          <button
-            type="button"
-            className="py-2 w-full border-2 rounded bg-amber-300 cursor-pointer hover:bg-amber-200"
-            onClick={onSubmit}
-          >
-            Send gift to the quality assurance elves.
-          </button>
+          {actionPoints > 0 && moundsStored > 0 && (
+            <>
+              <p className="mb-2 text-center text-sm">
+                Sending the gift to the QA elves consume 1 action point so
+                ensure your gift matches the reference image!
+              </p>
+              <button
+                type="button"
+                className="py-2 w-full border-2 rounded bg-amber-300 cursor-pointer hover:bg-amber-200"
+                onClick={onSubmit}
+              >
+                Send gift to the quality assurance elves.
+              </button>
+            </>
+          )}
+          {actionPoints === 0 && (
+            <p className="text-center">
+              You do not have enough action points to complete this task.
+            </p>
+          )}
+          {actionPoints > 0 && moundsStored === 0 && (
+            <p className="text-center">
+              There are not gift mounds to wrap, visit the forge to smelt ore.
+            </p>
+          )}
         </section>
       </div>
       {result && (
@@ -380,7 +434,13 @@ const WrappingGame = () => {
               mates will be pleased!
             </p>
           )}
-          {!result.passedQA && (
+          {result.notEnoughMounds && !result.passedQA && (
+            <p>
+              There are not enough gift mounds to be wrapped, a sneaky elf got
+              in there before you, try another action.
+            </p>
+          )}
+          {!result.notEnoughMounds && !result.passedQA && (
             <p>
               You consumed 1 action point but did not manage to wrap the present
               correctly - Better luck next time.
@@ -390,7 +450,7 @@ const WrappingGame = () => {
             <button
               className="py-2 border-2 rounded bg-blue-300 cursor-pointer hover:bg-blue-200 mt-2"
               type="button"
-              onClick={() => window.location.reload()}
+              onClick={() => window.dispatchEvent(new Event("reload"))}
             >
               Wrap a new gift!
             </button>

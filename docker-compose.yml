@@ -11,6 +11,7 @@ services:
       - $PWD/public:/app/public
       - $PWD/middleware.ts:/app/middleware.ts
       - $PWD/instrumentation.ts:/app/instrumentation.ts
+      - $PWD/game.json:/app/game.json
     ports:
       - 3000:3000
     command: ["pnpm", "dev"]
