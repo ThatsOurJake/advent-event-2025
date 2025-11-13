@@ -31,7 +31,7 @@ const BeatMarker = ({
   </div>
 );
 
-const generateBeatMap = () => {
+const generateBeatMap = (actionPoints: number) => {
   const patterns = [
     "x-x-x-x-x",
     "x-xx-x-xx",
@@ -41,7 +41,8 @@ const generateBeatMap = () => {
   ];
 
   const baseSeed = new Date().toDateString();
-  const index = rngSeeded(1, patterns.length, baseSeed) - 1;
+  const index =
+    rngSeeded(1, patterns.length, `${baseSeed}-${actionPoints}`) - 1;
 
   return patterns[index];
 };
@@ -62,7 +63,7 @@ const ForgeGame = ({ oreStored }: ForgeGameProps) => {
     decreaseActionPoints,
   } = useContext(AppContext);
 
-  const beatMap = useMemo(() => generateBeatMap(), []);
+  const beatMap = useMemo(() => generateBeatMap(actionPoints), [actionPoints]);
   const duration = 3000;
   const initialDelay = 1000;
   const dashDelay = 500;
@@ -325,7 +326,7 @@ const ForgeGame = ({ oreStored }: ForgeGameProps) => {
             <button
               className="py-2 border-2 rounded bg-blue-300 cursor-pointer hover:bg-blue-200 mt-2"
               type="button"
-              onClick={() => window.location.reload()}
+              onClick={() => window.dispatchEvent(new Event("reload"))}
             >
               Forge again!
             </button>

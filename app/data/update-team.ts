@@ -6,6 +6,7 @@ import type { teams } from "../shared-types";
 interface Team {
   name: teams;
   stats: {
+    score: number;
     ore: {
       mined: number;
       stored: number;

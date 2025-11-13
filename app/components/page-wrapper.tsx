@@ -14,6 +14,7 @@ interface PageWrapperProps {
 
 type AppContextProps = Omit<PageWrapperProps, "children"> & {
   decreaseActionPoints: () => void;
+  increaseTeamScore: () => void;
 };
 
 export const AppContext = createContext<AppContextProps>({} as AppContextProps);
@@ -27,10 +28,15 @@ export const PageWrapper = ({
   const [actionPoints, setActionPoints] = useState<number>(
     user.game.actionPoints,
   );
+  const [localTeamScore, setTeamScore] = useState<number>(Number(teamScore));
 
   const decreaseActionPoints = useCallback(() => {
     setActionPoints(actionPoints - 1);
   }, [actionPoints]);
+
+  const increaseTeamScore = useCallback(() => {
+    setTeamScore(localTeamScore + 1);
+  }, [localTeamScore]);
 
   return (
     <AppContext
@@ -39,9 +45,10 @@ export const PageWrapper = ({
         user,
         teamScore,
         decreaseActionPoints,
+        increaseTeamScore,
       }}
     >
-      <div className="flex flex-row my-4">
+      <div className="flex flex-row">
         <div className="w-1/4">
           <div
             className={`mb-2 p-4 text-center border-2 border-black rounded flex flex-col justify-center items-center gap-y-1 ${theme.background}`}
@@ -71,7 +78,7 @@ export const PageWrapper = ({
             </p>
             <p className="text-sm text-center">
               <span className="font-bold">Teams current score:</span>{" "}
-              {teamScore}
+              {localTeamScore}
             </p>
           </div>
           <CoreStatsList />

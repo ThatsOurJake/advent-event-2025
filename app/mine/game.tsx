@@ -32,12 +32,12 @@ const MiningGame = () => {
     const zoneRect = minebarZone.getBoundingClientRect();
 
     const max = Math.floor(barRect.width - zoneRect.width);
-    const dateStr = new Date().toDateString();
+    const baseSeed = new Date().toDateString();
 
-    const zoneLeft = rngSeeded(0, max, dateStr);
+    const zoneLeft = rngSeeded(0, max, `${baseSeed}-${actionPoints}`);
 
     minebarZone.style.left = `${zoneLeft}px`;
-  }, []);
+  }, [actionPoints]);
 
   useEffect(() => {
     if (!open) {
@@ -188,7 +188,7 @@ const MiningGame = () => {
             <button
               className="py-2 border-2 rounded bg-blue-300 cursor-pointer hover:bg-blue-200 mt-2"
               type="button"
-              onClick={() => window.location.reload()}
+              onClick={() => window.dispatchEvent(new Event("reload"))}
             >
               Re-Enter the mines!
             </button>

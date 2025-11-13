@@ -13,4 +13,8 @@ export interface PostGameForgePayload extends PostGameBasePayload {
   passed?: boolean;
 }
 
+export interface PostGameWrappingPayload extends PostGameBasePayload {
+  passed?: boolean;
+}
+
 export type teams = "red" | "green" | "blue";
