@@ -3,7 +3,7 @@ import { KEY_GIFT_STORED, KEY_MOUND_STORED, KEY_ORE_STORED } from "../constants"
 import redis from "../services/redis";
 import type { teams } from "../shared-types";
 import { constructTeamKey } from "../utils/construct-team-key";
-import { createTeam, getTeam } from "./update-team";
+import { createTeam, getTeam } from "./teams";
 
 export const seedDB = async () => {
   const teams: teams[] = ["red", "green", "blue"];

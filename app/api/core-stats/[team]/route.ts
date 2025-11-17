@@ -1,7 +1,7 @@
 import type { NextApiRequest } from "next";
 import { auth } from "../../../auth";
 import { getCoreStats } from "../../../data/core-stats";
-import { getUser } from "../../../data/get-user";
+import { getUser } from "../../../data/user";
 import type { teams } from "../../../shared-types";
 
 export async function GET(

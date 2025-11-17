@@ -2,7 +2,7 @@ import { ChoreList } from "./components/chores-list";
 import { PageWrapper } from "./components/page-wrapper";
 import { getServerUser } from "./components/server-hooks/get-server-user";
 import { KEY_SCORE } from "./constants";
-import { getTeamScores } from "./data/update-team";
+import { getTeamScores } from "./data/teams";
 import redis from "./services/redis";
 import { constructTeamKey } from "./utils/construct-team-key";
 import { mapTeamToColour, mapTeamToName } from "./utils/map-team";

@@ -3,7 +3,7 @@ import { TEAM_COLLECTION } from "../constants";
 import { client, connect } from "../services/mongo";
 import type { teams } from "../shared-types";
 
-interface Team {
+export interface Team {
   name: teams;
   stats: {
     score: number;
@@ -82,6 +82,19 @@ export const updateTeamStats = async (team: teams, path: TeamStatsPaths, byValue
   });
 };
 
+export const setTeamStat = async (team: teams, path: TeamStatsPaths, newValue: number) => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<Team>(TEAM_COLLECTION);
+
+  await collection.findOneAndUpdate({
+    name: team,
+  }, {
+    $set: { [path]: newValue }
+  });
+};
+
 export const getTeamScores = async () => {
   await connect();
 
@@ -89,4 +102,45 @@ export const getTeamScores = async () => {
   const collection = db.collection<Team>(TEAM_COLLECTION);
 
   return collection.find({}).project<{ name: teams; stats: { score: number } }>({ 'stats.score': 1, name: 1 }).toArray();
+};
+
+export const updateTeamsNightlyResources = async () => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<Team>(TEAM_COLLECTION);
+
+  const teams = await collection.find({}).toArray();
+  const output: { team: string; newOreValue: number; newGiftMoundsValue: number; newWrappedGiftsValue: number }[] = [];
+
+  for (const team of teams) {
+    const { stats: { ore, giftMounds, wrappedGifts } } = team;
+    console.log(`Updating ${team.name} nightly stats`);
+
+    const newOreValue = ore.stored + ore.mined;
+    const newGiftMoundsValue = giftMounds.stored + giftMounds.collected;
+    const newWrappedGiftsValue = wrappedGifts.stored + wrappedGifts.wrapped;
+
+    await collection.findOneAndUpdate({
+      _id: team._id,
+    }, {
+      $set: {
+        'stats.ore.mined': 0,
+        'stats.giftMounds.collected': 0,
+        'stats.wrappedGifts.wrapped': 0,
+        'stats.ore.stored': newOreValue,
+        'stats.giftMounds.stored': newGiftMoundsValue,
+        'stats.wrappedGifts.stored': newWrappedGiftsValue,
+      },
+    });
+
+    output.push({
+      team: team.name,
+      newGiftMoundsValue,
+      newOreValue,
+      newWrappedGiftsValue
+    });
+  }
+
+  return output;
 };

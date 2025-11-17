@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { auth } from "../../auth";
 import { VALID_LOCATIONS_ARR } from "../../constants";
-import { getUser } from "../../data/get-user";
+import { getUser } from "../../data/user";
 import type { PostGameBasePayload } from "../../shared-types";
 import { processGame } from "./process";
 

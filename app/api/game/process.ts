@@ -8,8 +8,8 @@ import {
   KEY_SCORE,
 } from "../../constants";
 import { addActivityItem } from "../../data/get-activity-feed";
-import { updateTeamStats } from "../../data/update-team";
-import { decrUserActionPoints } from "../../data/update-user";
+import { updateTeamStats } from "../../data/teams";
+import { decrUserActionPoints } from "../../data/user";
 import redis from "../../services/redis";
 import type {
   PostGameForgePayload,

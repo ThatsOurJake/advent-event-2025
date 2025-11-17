@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useCallback, useState } from "react";
-import type { User } from "../data/get-user";
+import { OPEN_TIME } from "../constants";
+import type { User } from "../data/user";
 import { mapTeamToName, type ThemeColours } from "../utils/map-team";
 import { ActivityZone } from "./activity-zone";
 import { CoreStatsList } from "./core-stats-list";
@@ -39,6 +40,27 @@ export const PageWrapper = ({
     setTeamScore(localTeamScore + 1);
   }, [localTeamScore]);
 
+  const dayOfWeek = new Date().getDay();
+  const hourOfDay = new Date().getHours();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  const isAfterOpeningTime = hourOfDay >= OPEN_TIME;
+
+  if (isWeekend || !isAfterOpeningTime) {
+    return (
+      <div className="bg-white w-1/2 mx-auto px-2 py-4 rounded border-2 space-y-2">
+        <p className="text-center">The workshop is currently closed!</p>
+        <img
+          src="/static/workshop-closed.png"
+          aria-label="A workshop with a closed sign attached to the door"
+          className="w-2/3 rounded border-2 mx-auto"
+        />
+        <p className="text-center">
+          Opening times are Mon - Fri @ {OPEN_TIME}:00am - Midnight.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <AppContext
       value={{
@@ -62,7 +84,7 @@ export const PageWrapper = ({
                 className="w-full relative z-10 rounded border-2"
               />
               <img
-                src={`https://api.dicebear.com/9.x/lorelei-neutral/svg?seed=${user?.userId}&backgroundColor=d68851,d68851`}
+                src={`/api/avatar/${user.userId}`}
                 alt="user profile"
                 className="rounded-full absolute z-1"
                 style={{ top: "28%", left: "34%", width: "29%" }}

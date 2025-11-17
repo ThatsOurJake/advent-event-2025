@@ -1,5 +1,5 @@
 import type { teams } from "../shared-types";
-import { getTeam } from "./update-team";
+import { getTeam } from "./teams";
 
 export interface CoreStats {
   ore: {
