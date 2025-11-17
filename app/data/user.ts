@@ -144,3 +144,41 @@ export const getUsersLeftoverAP = async (): Promise<UserTeamCount[]> => {
 
   return result;
 };
+
+interface Roster {
+  team: teams;
+  users: {
+    userId: string;
+    name: string;
+  }[]
+}
+
+export const getTeamRoster = async () => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<User>(USER_COLLECTION);
+
+  const result = await collection.aggregate([
+    {
+      $group: {
+        _id: "$game.team",
+        users: {
+          $push: {
+            userId: "$userId",
+            name: "$details.name"
+          }
+        }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        team: "$_id",
+        users: 1
+      }
+    }
+  ]).toArray() as Roster[];
+
+  return result.sort((a, b) => a.team.localeCompare(b.team));
+};

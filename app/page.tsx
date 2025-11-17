@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ChoreList } from "./components/chores-list";
 import { PageWrapper } from "./components/page-wrapper";
 import { getServerUser } from "./components/server-hooks/get-server-user";
@@ -22,18 +23,29 @@ const Home = async () => {
           Faction Statistics
         </p>
         <div className="grid grid-cols-3">
-          {teamScores.map((s) => (
-            <div
-              key={`score:${s.name}`}
-              className={`${mapTeamToColour(s.name).background} m-1 p-2 rounded border-2`}
-            >
-              <p className="text-xl font-bold text-center">
-                {mapTeamToName(s.name)}
-              </p>
-              <p className="text-center">Current Score: {s.stats.score}</p>
-            </div>
-          ))}
+          {teamScores.map((s) => {
+            const theme = mapTeamToColour(s.name);
+            return (
+              <div
+                key={`score:${s.name}`}
+                className={`${theme.background} m-1 p-2 rounded border-2`}
+              >
+                <p
+                  className={`text-xl font-bold text-center ${theme.teamLinkColour}`}
+                >
+                  {mapTeamToName(s.name)}
+                </p>
+                <p className="text-center">Current Score: {s.stats.score}</p>
+              </div>
+            );
+          })}
         </div>
+        <Link
+          href="/teams"
+          className="text-center text-purple-600 hover:underline"
+        >
+          <p className="py-1">View Team Members</p>
+        </Link>
       </div>
     </PageWrapper>
   );
