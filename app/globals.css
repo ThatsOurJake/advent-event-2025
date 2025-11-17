@@ -152,3 +152,22 @@ body {
   background-size: 160% 160%;
   will-change: background, filter, transform, box-shadow;
 }
+
+#bulletin-board {
+  div[data-id="mkdown"] p {
+    white-space: pre-wrap;
+  }
+
+  div[data-id="mkdown"] a {
+    color: var(--color-purple-600)
+  }
+
+  div[data-id="mkdown"] a:hover {
+    text-decoration: underline;
+  }
+
+  div[data-id="mkdown"] ul {
+    list-style: disc;
+    list-style-position: inside;
+  }
+}
