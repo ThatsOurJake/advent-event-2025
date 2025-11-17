@@ -66,7 +66,7 @@ export const CoreStatsList = ({ localTeamScore }: CoreStatsListProps) => {
       >
         <p className="font-bold">Gift Mounds:</p>
         <p className="text-sm">
-          Collected Today: {coreStats.giftMounds.collected}
+          Forged Today: {coreStats.giftMounds.collected}
         </p>
         <p className="text-sm">In Storage: {coreStats.giftMounds.stored}</p>
       </div>

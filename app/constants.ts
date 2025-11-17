@@ -16,3 +16,8 @@ export const VALID_LOCATIONS_ARR = [
 export const USER_COLLECTION = "users";
 export const TEAM_COLLECTION = "teams";
 export const ACTIVITY_COLLECTION = "activity";
+
+export const FAILURE_PERCENTAGE = 2; // Below n from 1, 10
+
+// After 5am the game can be access
+export const OPEN_TIME = 5;

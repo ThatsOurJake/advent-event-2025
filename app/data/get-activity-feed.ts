@@ -1,13 +1,7 @@
 import { ACTIVITY_COLLECTION, USER_COLLECTION } from "../constants";
 import { client, connect } from "../services/mongo";
-import type { teams } from "../shared-types";
-import type { User } from "./get-user";
-
-export type ActivityTypes =
-  | "USE_MINE"
-  | "USE_FORGE"
-  | "USE_WRAP"
-  | "USE_SLEIGH";
+import type { ActivityTypes, teams } from "../shared-types";
+import type { User } from "./user";
 
 export interface ActivityItem {
   userId: string;

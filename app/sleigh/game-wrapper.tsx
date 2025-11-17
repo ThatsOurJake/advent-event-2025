@@ -22,6 +22,7 @@ interface SleighGameProps {
 const SleighGame = ({ giftsStored }: SleighGameProps) => {
   const {
     user: {
+      userId,
       game: { actionPoints },
     },
     decreaseActionPoints,
@@ -60,13 +61,13 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
       return;
     }
 
-    const baseSeed = new Date().toDateString();
+    const baseSeed = `${userId}-${new Date().toDateString()}`;
     const patternIndex =
       rngSeeded(1, validBumperPatterns.length, `${baseSeed}-${actionPoints}`) -
       1;
 
     setBumperPatternRef.current(validBumperPatterns[patternIndex]);
-  }, [loading, actionPoints]);
+  }, [loading, actionPoints, userId]);
 
   useEffect(() => {
     window.addEventListener(

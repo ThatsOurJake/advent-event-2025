@@ -18,3 +18,9 @@ export interface PostGameWrappingPayload extends PostGameBasePayload {
 }
 
 export type teams = "red" | "green" | "blue";
+
+export type ActivityTypes =
+  | "USE_MINE"
+  | "USE_FORGE"
+  | "USE_WRAP"
+  | "USE_SLEIGH";

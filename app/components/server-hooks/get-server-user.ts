@@ -1,5 +1,5 @@
 import { auth } from "@/app/auth";
-import { createUser, getUser } from "@/app/data/get-user";
+import { createUser, getUser } from "@/app/data/user";
 
 export const getServerUser = async () => {
   const session = await auth();

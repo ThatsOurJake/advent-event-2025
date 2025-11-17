@@ -75,3 +75,72 @@ export const getUser = async (sub: string): Promise<User | null> => {
     game: user.game,
   };
 };
+
+export const decrUserActionPoints = async (userId: string) => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<User>(USER_COLLECTION);
+
+  await collection.findOneAndUpdate(
+    {
+      userId,
+    },
+    {
+      $inc: { "game.actionPoints": -1 },
+    },
+  );
+};
+
+export const resetUserActionPoints = async () => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<User>(USER_COLLECTION);
+
+  console.log(`Resetting Users Action Points`);
+
+  await collection.updateMany({}, {
+    $set: {
+      'game.actionPoints': STARTING_AP
+    }
+  });
+};
+
+export interface UserTeamCount { _id: teams, count: number }
+
+export const getTeamUserCount = async (): Promise<UserTeamCount[]> => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<User>(USER_COLLECTION);
+
+  const result = await collection.aggregate([
+    {
+      $group: {
+        _id: "$game.team",
+        count: { $sum: 1 }
+      }
+    }
+  ]).toArray() as UserTeamCount[];
+
+  return result;
+};
+
+export const getUsersLeftoverAP = async (): Promise<UserTeamCount[]> => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<User>(USER_COLLECTION);
+
+  const result = await collection.aggregate([
+    {
+      $group: {
+        _id: "$game.team",
+        count: { $sum: "$game.actionPoints" }
+      }
+    }
+  ]).toArray() as UserTeamCount[];
+
+  return result;
+};
