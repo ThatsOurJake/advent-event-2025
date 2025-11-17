@@ -1,6 +1,6 @@
 import type { NextApiRequest } from "next";
 import { auth } from "../../../auth";
-import { getCoreStats } from "../../../data/core-stats";
+import { getActivityItems } from "../../../data/get-activity-feed";
 import { getUser } from "../../../data/get-user";
 import type { teams } from "../../../shared-types";
 
@@ -27,6 +27,11 @@ export async function GET(
     });
   }
 
-  const coreStats = await getCoreStats(team);
-  return new Response(JSON.stringify(coreStats || {}));
+  const activityFeed = await getActivityItems(team);
+
+  return new Response(JSON.stringify(activityFeed), {
+    headers: {
+      'content-type': 'application/json'
+    }
+  });
 }

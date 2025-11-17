@@ -15,3 +15,4 @@ export const VALID_LOCATIONS_ARR = [
 
 export const USER_COLLECTION = "users";
 export const TEAM_COLLECTION = "teams";
+export const ACTIVITY_COLLECTION = "activity";

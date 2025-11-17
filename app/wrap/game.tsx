@@ -420,8 +420,10 @@ const WrappingGame = ({ moundsStored }: WrappingGameProps) => {
             </p>
           )}
           {actionPoints > 0 && moundsStored === 0 && (
-            <p className="text-center">
-              There are not gift mounds to wrap, visit the forge to smelt ore.
+            <p className="text-center font-bold">
+              Gift Mound storage is currently at 0, therefore there is nothing
+              to wrap. Visit "The Forge" to smelt ore into a gift mound for
+              wrapping tomorrow!
             </p>
           )}
         </section>
