@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { createContext, useCallback, useState } from "react";
+import Markdown from "react-markdown";
 import { OPEN_TIME } from "../constants";
+import type { BulletinMessage } from "../data/bulletin-board";
 import type { User } from "../data/user";
 import { mapTeamToName, type ThemeColours } from "../utils/map-team";
 import { ActivityZone } from "./activity-zone";
@@ -12,6 +14,7 @@ interface PageWrapperProps {
   user: User;
   theme: ThemeColours;
   teamScore: string;
+  bulletinBoardMessages?: BulletinMessage[];
   children: React.ReactNode;
 }
 
@@ -26,6 +29,7 @@ export const PageWrapper = ({
   theme,
   user,
   teamScore,
+  bulletinBoardMessages = [],
   children,
 }: PageWrapperProps) => {
   const [actionPoints, setActionPoints] = useState<number>(
@@ -109,13 +113,25 @@ export const PageWrapper = ({
           <ActivityZone />
         </div>
         <div className="w-3/4 px-2">
-          <div className="bg-orange-100 rounded border-2 p-2 mb-2">
-            <p className="text-center font-bold">Bulletin board</p>
-            <p className="px-4 text-center">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-              malesuada pellentesque urna sit amet sollicitudin.
-            </p>
-          </div>
+          {bulletinBoardMessages.length > 0 && (
+            <div
+              className="bg-orange-100 rounded border-2 p-2 mb-2"
+              id="bulletin-board"
+            >
+              <p className="text-center font-bold mb-1">Bulletin board</p>
+              <div className="space-y-2">
+                {bulletinBoardMessages.map((m) => (
+                  <div
+                    key={m._id}
+                    className="border rounded p-2 bg-white"
+                    data-id="mkdown"
+                  >
+                    <Markdown>{m.message}</Markdown>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <CoreStatsList localTeamScore={localTeamScore} />
           <div>{children}</div>
         </div>

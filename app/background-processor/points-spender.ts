@@ -3,6 +3,10 @@ import { getTeam, setTeamStat, type Team } from "../data/teams";
 import type { ActivityTypes, teams } from "../shared-types";
 import { rng } from "../utils/random";
 
+/**
+ * Weighting to allow scoring points more likely
+ * With the mine being the least likely as this can be done all the time and we want to try focus on gaining score
+*/
 const getValidActivities = (team: Team) => {
   const result: ActivityTypes[] = [
     'USE_MINE'
@@ -13,15 +17,15 @@ const getValidActivities = (team: Team) => {
   } = team;
 
   if (ore.stored > 0) {
-    result.push("USE_FORGE");
+    result.push("USE_FORGE", "USE_FORGE");
   }
 
   if (giftMounds.stored > 0) {
-    result.push("USE_WRAP");
+    result.push("USE_WRAP", "USE_WRAP");
   }
 
   if (wrappedGifts.stored > 0) {
-    result.push("USE_SLEIGH");
+    result.push("USE_SLEIGH", "USE_SLEIGH", "USE_SLEIGH");
   }
 
   return result;
@@ -35,6 +39,8 @@ export const spendPoints = async (team: teams, actionPoints: number) => {
     return;
   }
 
+  const successActions: ActivityTypes[] = [];
+
   for (let i = 0; i < actionPoints; i++) {
     const activities = getValidActivities(teamDB);
     const activityIndex = rng(1, activities.length) - 1;
@@ -43,6 +49,8 @@ export const spendPoints = async (team: teams, actionPoints: number) => {
     console.log(`Team: ${team} - Activity: ${activity} - Was Success: ${successful}`);
 
     if (successful) {
+      successActions.push(activity);
+
       switch (activity) {
         case 'USE_MINE':
           teamDB.stats.ore.mined++;
@@ -73,4 +81,6 @@ export const spendPoints = async (team: teams, actionPoints: number) => {
   await setTeamStat(team, 'stats.wrappedGifts.stored', teamDB.stats.wrappedGifts.stored);
 
   await setTeamStat(team, 'stats.score', teamDB.stats.score);
+
+  return successActions;
 };
