@@ -3,6 +3,7 @@
 import { createContext, useCallback, useState } from "react";
 import type { User } from "../data/get-user";
 import { mapTeamToName, type ThemeColours } from "../utils/map-team";
+import { ActivityZone } from "./activity-zone";
 import { CoreStatsList } from "./core-stats-list";
 
 interface PageWrapperProps {
@@ -76,14 +77,20 @@ export const PageWrapper = ({
               <span className="font-bold">Action points left:</span>{" "}
               {actionPoints}
             </p>
-            <p className="text-sm text-center">
-              <span className="font-bold">Teams current score:</span>{" "}
-              {localTeamScore}
+          </div>
+          <ActivityZone />
+        </div>
+        <div className="w-3/4 px-2">
+          <div className="bg-orange-100 rounded border-2 p-2 mb-2">
+            <p className="text-center font-bold">Bulletin board</p>
+            <p className="px-4 text-center">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
+              malesuada pellentesque urna sit amet sollicitudin.
             </p>
           </div>
-          <CoreStatsList />
+          <CoreStatsList localTeamScore={localTeamScore} />
+          <div>{children}</div>
         </div>
-        <div className="w-3/4 px-2">{children}</div>
       </div>
     </AppContext>
   );

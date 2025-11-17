@@ -302,9 +302,9 @@ const ForgeGame = ({ oreStored }: ForgeGameProps) => {
           </p>
         )}
         {actionPoints > 0 && oreStored === 0 && (
-          <p className="my-1 text-center">
-            There is not enough ore in storage to smelt, visit the mines to
-            gather more.
+          <p className="my-1 text-center font-bold">
+            Ore storage is currently at 0, therefore there is no ore available
+            to smelt right now. Visit "The Mines" to gather ore for tomorrow!
           </p>
         )}
       </div>

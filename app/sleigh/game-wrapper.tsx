@@ -173,9 +173,11 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
               </p>
             )}
             {!loading && actionPoints > 0 && giftsStored === 0 && (
-              <p className="text-center">
-                There are not enough wrapped presents, visit the Wrapping
-                Station to wrap one.
+              <p className="text-center font-bold">
+                Wrapped Present in storage is currently at 0, therefore nothing
+                can be loaded on to the sleigh right now. Visit the "Wrapping
+                Station" to wrap presents to be loaded on to the sleigh
+                tomorrow!
               </p>
             )}
             {!loading && !canReleaseGift && (

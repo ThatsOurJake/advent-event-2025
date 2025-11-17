@@ -81,3 +81,12 @@ export const updateTeamStats = async (team: teams, path: TeamStatsPaths, byValue
     $inc: { [path]: byValue }
   });
 };
+
+export const getTeamScores = async () => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<Team>(TEAM_COLLECTION);
+
+  return collection.find({}).project<{ name: teams; stats: { score: number } }>({ 'stats.score': 1, name: 1 }).toArray();
+};
