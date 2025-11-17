@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { createContext, useCallback, useState } from "react";
 import { OPEN_TIME } from "../constants";
 import type { User } from "../data/user";
@@ -93,7 +94,12 @@ export const PageWrapper = ({
             <p className="truncate max-w-full">{user?.details.name}</p>
             <p className="text-sm text-center">
               <span className="font-bold">Elf Faction:</span>{" "}
-              {mapTeamToName(user.game.team)}
+              <Link
+                href={`/teams`}
+                className={`hover:underline ${theme.teamLinkColour}`}
+              >
+                {mapTeamToName(user.game.team)}
+              </Link>
             </p>
             <p className="text-sm text-center">
               <span className="font-bold">Action points left:</span>{" "}
