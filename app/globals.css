@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 body {
-  font-family: var(--font-open-sans), Helvetica, sans-serif;
+  font-family: var(--selected-font), Helvetica, sans-serif;
 }
 
 @keyframes vertical-fade-flow {

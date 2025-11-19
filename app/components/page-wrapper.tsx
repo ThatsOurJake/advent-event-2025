@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { createContext, useCallback, useState } from "react";
-import Markdown from "react-markdown";
+import game from "../../game.json";
 import { OPEN_TIME } from "../constants";
-import type { BulletinMessage } from "../data/bulletin-board";
+import type { BulletinMessage as BulletinMessageData } from "../data/bulletin-board";
 import type { User } from "../data/user";
 import { mapTeamToName, type ThemeColours } from "../utils/map-team";
 import { ActivityZone } from "./activity-zone";
+import { GenericAvatar } from "./avatars/generic";
+import { BulletinMessage } from "./bulletin-message";
 import { CoreStatsList } from "./core-stats-list";
 
 interface PageWrapperProps {
   user: User;
   theme: ThemeColours;
-  teamScore: string;
-  bulletinBoardMessages?: BulletinMessage[];
+  teamScore: number;
+  bulletinBoardMessages?: BulletinMessageData[];
   children: React.ReactNode;
 }
 
@@ -35,7 +37,7 @@ export const PageWrapper = ({
   const [actionPoints, setActionPoints] = useState<number>(
     user.game.actionPoints,
   );
-  const [localTeamScore, setTeamScore] = useState<number>(Number(teamScore));
+  const [localTeamScore, setTeamScore] = useState<number>(teamScore);
 
   const decreaseActionPoints = useCallback(() => {
     setActionPoints(actionPoints - 1);
@@ -82,20 +84,11 @@ export const PageWrapper = ({
             className={`mb-2 p-4 text-center border-2 border-black rounded flex flex-col justify-center items-center gap-y-1 ${theme.background}`}
           >
             <p className="font-bold">Elf Identification Card</p>
-            <div className="w-1/2 mx-auto relative" aria-hidden>
-              <img
-                src="/static/elf.png"
-                alt="user frame"
-                className="w-full relative z-10 rounded border-2"
-              />
-              <img
-                src={`/api/avatar/${user.userId}`}
-                alt="user profile"
-                className="rounded-full absolute z-1"
-                style={{ top: "28%", left: "34%", width: "29%" }}
+            <div className="w-2/3">
+              <GenericAvatar
+                user={{ name: user.details.name, userId: user.userId }}
               />
             </div>
-            <p className="truncate max-w-full">{user?.details.name}</p>
             <p className="text-sm text-center">
               <span className="font-bold">Elf Faction:</span>{" "}
               <Link
@@ -109,6 +102,14 @@ export const PageWrapper = ({
               <span className="font-bold">Action points left:</span>{" "}
               {actionPoints}
             </p>
+            <a
+              href={game.teamsChannels[user.game.team]}
+              target="_blank"
+              rel="noopener"
+              className="text-purple-600 hover:underline"
+            >
+              Join your teams discussion
+            </a>
           </div>
           <ActivityZone />
         </div>
@@ -119,15 +120,9 @@ export const PageWrapper = ({
               id="bulletin-board"
             >
               <p className="text-center font-bold mb-1">Bulletin board</p>
-              <div className="space-y-2">
+              <div className="space-y-2" id="messages">
                 {bulletinBoardMessages.map((m) => (
-                  <div
-                    key={m._id}
-                    className="border rounded p-2 bg-white"
-                    data-id="mkdown"
-                  >
-                    <Markdown>{m.message}</Markdown>
-                  </div>
+                  <BulletinMessage key={m._id} data={m} />
                 ))}
               </div>
             </div>

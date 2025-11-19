@@ -3,9 +3,27 @@ import { updateTeamsNightlyResources } from "../data/teams";
 import { resetUserActionPoints } from "../data/user";
 import redis from "../services/redis";
 import { constructTeamKey } from "../utils/construct-team-key";
+import { isWithinEventDate } from "../utils/is-within-event-date";
+import { calculateMVE } from "./calculate-mve";
 import { handleInactive } from "./handle-inactive";
 
+// TODO: Run on instance 0 only
 export const backgroundProcessor = async () => {
+  const dayOfWeek = new Date().getDay();
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  // const isWithinEvent = isWithinEventDate();
+  const isWithinEvent = true;
+
+  if (isWeekend) {
+    console.log(`Is the weekend - workshop is closed`);
+    return;
+  }
+
+  if (!isWithinEvent) {
+    console.log(`Event is yet to start`);
+    return;
+  }
+
   await handleInactive();
 
   const result = await updateTeamsNightlyResources();
@@ -17,4 +35,6 @@ export const backgroundProcessor = async () => {
   }
 
   await resetUserActionPoints();
+
+  await calculateMVE();
 };

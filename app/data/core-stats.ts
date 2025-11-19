@@ -16,7 +16,6 @@ export interface CoreStats {
   };
 }
 
-// TODO: I think I want this to be read from mongo as it'll slow down redis, we will also store it in redis
 export const getCoreStats = async (team: teams): Promise<CoreStats | null> => {
   const teamDB = await getTeam(team)!;
 

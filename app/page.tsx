@@ -1,28 +1,45 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
+import { ForgeAvatar } from "./components/avatars/forge";
+import { MineAvatar } from "./components/avatars/miner";
+import { SleighAvatar } from "./components/avatars/sleigh";
+import { WrapAvatar } from "./components/avatars/wrap";
 import { ChoreList } from "./components/chores-list";
 import { PageWrapper } from "./components/page-wrapper";
 import { getServerUser } from "./components/server-hooks/get-server-user";
-import { KEY_SCORE } from "./constants";
+import { COOKIE_BULLETINS_DISMISSED } from "./constants";
 import { getMessages } from "./data/bulletin-board";
+import { getLatestMVE } from "./data/mve";
 import { getTeamScores } from "./data/teams";
-import redis from "./services/redis";
-import { constructTeamKey } from "./utils/construct-team-key";
 import { mapTeamToColour, mapTeamToName } from "./utils/map-team";
 
 const Home = async () => {
+  const cookieStore = await cookies();
   const user = await getServerUser();
-  const teamScore =
-    (await redis.get(constructTeamKey(user.game.team, KEY_SCORE))) || "0";
   const teamColours = mapTeamToColour(user.game.team);
   const teamScores = await getTeamScores();
   const bulletinBoardMessages = await getMessages(user.game.team);
+  const dismissedBulletinsCookie = cookieStore.get(COOKIE_BULLETINS_DISMISSED);
+  const dismissedIds = dismissedBulletinsCookie
+    ? dismissedBulletinsCookie.value.split("|")
+    : [];
+  const filteredMessages = bulletinBoardMessages.filter((x) => {
+    return !dismissedIds.includes(x._id?.toString() || "");
+  });
+  const mve = await getLatestMVE();
+  const teamMves = mve?.awards.find((x) => x.team === user.game.team);
+  const formattedDate = new Date(
+    mve?.timestamp || Date.now(),
+  ).toLocaleDateString("en-GB");
+  const teamScore =
+    teamScores.find((x) => x.name === user.game.team)?.stats.score || 0;
 
   return (
     <PageWrapper
       theme={teamColours}
       user={user}
       teamScore={teamScore}
-      bulletinBoardMessages={JSON.parse(JSON.stringify(bulletinBoardMessages))}
+      bulletinBoardMessages={JSON.parse(JSON.stringify(filteredMessages))}
     >
       <ChoreList />
       <div className="bg-white m-2 p-2 border-2 rounded">
@@ -54,6 +71,97 @@ const Home = async () => {
           <p className="py-1">View Team Members</p>
         </Link>
       </div>
+      {mve && teamMves && (
+        <div className="bg-yellow-100 m-2 p-2 border-2 rounded">
+          <p className="text-2xl font-bold text-center">
+            Hardest working elves for the{" "}
+            <span className={`${teamColours.teamLinkColour}`}>
+              {mapTeamToName(user.game.team)}
+            </span>
+          </p>
+          <p className="text-sm text-center">
+            Last Updated {formattedDate} [Updates every 5 days]
+          </p>
+          <p className="italic text-sm text-center">
+            All elves are hard working, but these elves have been focusing their
+            energy on each task the most!
+          </p>
+          <div className="grid grid-cols-4 my-2">
+            {teamMves.mine.count > 0 && teamMves.mine.userName && (
+              <div>
+                <p className="text-center truncate font-semibold">
+                  Chief Miner
+                </p>
+                <div className="w-2/3 mx-auto my-2">
+                  <MineAvatar
+                    user={{
+                      userId: teamMves.mine.userId,
+                      name: teamMves.mine.userName,
+                    }}
+                  />
+                </div>
+                <p className="text-center text-sm">
+                  Mined: {teamMves.mine.count} ore
+                </p>
+              </div>
+            )}
+            {teamMves.forge.count > 0 && teamMves.forge.userName && (
+              <div>
+                <p className="text-center truncate font-semibold">
+                  Sweaty Blacksmith
+                </p>
+                <div className="w-2/3 mx-auto my-2">
+                  <ForgeAvatar
+                    user={{
+                      userId: teamMves.forge.userId,
+                      name: teamMves.forge.userName,
+                    }}
+                  />
+                </div>
+                <p className="text-center text-sm">
+                  Forged: {teamMves.forge.count} gift mound(s)
+                </p>
+              </div>
+            )}
+            {teamMves.wrap.count > 0 && teamMves.wrap.userName && (
+              <div>
+                <p className="text-center truncate font-semibold">
+                  Cellotape Master
+                </p>
+                <div className="w-2/3 mx-auto my-2">
+                  <WrapAvatar
+                    user={{
+                      userId: teamMves.wrap.userId,
+                      name: teamMves.wrap.userName,
+                    }}
+                  />
+                </div>
+                <p className="text-center text-sm">
+                  Wrapped: {teamMves.wrap.count} gift(s)
+                </p>
+              </div>
+            )}
+            {teamMves.sleigh.count > 0 && teamMves.sleigh.userName && (
+              <div>
+                <p className="text-center truncate font-semibold">
+                  Weightlifter
+                </p>
+                <div className="w-2/3 mx-auto my-2">
+                  <SleighAvatar
+                    user={{
+                      userId: teamMves.sleigh.userId,
+                      name: teamMves.sleigh.userName,
+                    }}
+                  />
+                </div>
+                <p className="text-center text-sm">
+                  Loaded: {teamMves.sleigh.count} gift(s) onto the sleigh
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </PageWrapper>
   );
 };

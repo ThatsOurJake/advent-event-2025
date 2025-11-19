@@ -1,4 +1,5 @@
 import type { validLocations } from "./api/location-stats/[team]/route";
+import type { TEAMS_ARR } from "./constants";
 
 export interface PostGameBasePayload {
   game: validLocations;
@@ -9,7 +10,7 @@ export interface PostGameMinePayload extends PostGameBasePayload {
 }
 
 export interface PostGameForgePayload extends PostGameBasePayload {
-  action: 'start' | 'end';
+  action: "start" | "end";
   passed?: boolean;
 }
 
@@ -17,7 +18,7 @@ export interface PostGameWrappingPayload extends PostGameBasePayload {
   passed?: boolean;
 }
 
-export type teams = "red" | "green" | "blue";
+export type teams = (typeof TEAMS_ARR)[number];
 
 export type ActivityTypes =
   | "USE_MINE"
