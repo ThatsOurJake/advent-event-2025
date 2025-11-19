@@ -16,6 +16,7 @@ import type {
   PostGameWrappingPayload,
   teams,
 } from "../../shared-types";
+import { calculateTaskOutcome } from "../../utils/calculate-task-outcome";
 import { constructTeamKey } from "../../utils/construct-team-key";
 import type { validLocations } from "../location-stats/[team]/route";
 
@@ -26,17 +27,20 @@ const checkResourceScript = fs.readFileSync(
 const processMineGame = async (
   userId: string,
   team: teams,
+  actionPoints: number,
   payload: PostGameMinePayload,
 ) => {
   await decrUserActionPoints(userId);
 
   if (payload.didMineOre) {
-    await updateTeamStats(team, "stats.ore.mined", 1);
+    const taskOutcome = calculateTaskOutcome(userId, actionPoints, 'mine');
+    await updateTeamStats(team, "stats.ore.mined", taskOutcome);
     await addActivityItem({
       team,
       type: "USE_MINE",
       userId,
     });
+    console.log(`Updated: ${team} ore mined by ${taskOutcome}`);
   }
 
   return undefined;
@@ -45,6 +49,7 @@ const processMineGame = async (
 const processForgeGame = async (
   userId: string,
   team: teams,
+  actionPoints: number,
   payload: PostGameForgePayload,
 ) => {
   const { action, passed } = payload;
@@ -73,12 +78,14 @@ const processForgeGame = async (
   await decrUserActionPoints(userId);
 
   if (action === "end" && passed) {
-    await updateTeamStats(team, "stats.giftMounds.collected", 1);
+    const taskOutcome = calculateTaskOutcome(userId, actionPoints, 'forge');
+    await updateTeamStats(team, "stats.giftMounds.collected", taskOutcome);
     await addActivityItem({
       team,
       type: "USE_FORGE",
       userId,
     });
+    console.log(`Updated: ${team} gift mounds by ${taskOutcome}`);
   }
 
   return undefined;
@@ -87,6 +94,7 @@ const processForgeGame = async (
 const processWrappingGame = async (
   userId: string,
   team: teams,
+  actionPoints: number,
   payload: PostGameWrappingPayload,
 ) => {
   const { passed } = payload;
@@ -108,12 +116,14 @@ const processWrappingGame = async (
   await updateTeamStats(team, "stats.giftMounds.stored", -1);
 
   if (passed) {
-    await updateTeamStats(team, "stats.wrappedGifts.wrapped", 1);
+    const taskOutcome = calculateTaskOutcome(userId, actionPoints, 'wrap_station');
+    await updateTeamStats(team, "stats.wrappedGifts.wrapped", taskOutcome);
     await addActivityItem({
       team,
       type: "USE_WRAP",
       userId,
     });
+    console.log(`Updated: ${team} gifts wrapped by ${taskOutcome}`);
   }
 
   return {
@@ -166,21 +176,23 @@ const processSleighGame = async (
 export const processGame = async (
   userId: string,
   team: teams,
+  actionPoints: number,
   game: validLocations,
   payload: object,
 ): Promise<object | undefined> => {
   if (game === "mine") {
-    return processMineGame(userId, team, payload as PostGameMinePayload);
+    return processMineGame(userId, team, actionPoints, payload as PostGameMinePayload);
   }
 
   if (game === "forge") {
-    return processForgeGame(userId, team, payload as PostGameForgePayload);
+    return processForgeGame(userId, team, actionPoints, payload as PostGameForgePayload);
   }
 
   if (game === "wrap_station") {
     return processWrappingGame(
       userId,
       team,
+      actionPoints,
       payload as PostGameWrappingPayload,
     );
   }

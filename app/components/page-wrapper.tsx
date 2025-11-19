@@ -6,6 +6,7 @@ import game from "../../game.json";
 import { OPEN_TIME } from "../constants";
 import type { BulletinMessage as BulletinMessageData } from "../data/bulletin-board";
 import type { User } from "../data/user";
+import { type GameEvents, getTodaysEvent } from "../utils/get-todays-event";
 import { mapTeamToName, type ThemeColours } from "../utils/map-team";
 import { ActivityZone } from "./activity-zone";
 import { GenericAvatar } from "./avatars/generic";
@@ -23,6 +24,7 @@ interface PageWrapperProps {
 type AppContextProps = Omit<PageWrapperProps, "children"> & {
   decreaseActionPoints: () => void;
   increaseTeamScore: () => void;
+  todaysEvent?: GameEvents;
 };
 
 export const AppContext = createContext<AppContextProps>({} as AppContextProps);
@@ -38,6 +40,7 @@ export const PageWrapper = ({
     user.game.actionPoints,
   );
   const [localTeamScore, setTeamScore] = useState<number>(teamScore);
+  const todaysEvent = getTodaysEvent();
 
   const decreaseActionPoints = useCallback(() => {
     setActionPoints(actionPoints - 1);
@@ -76,6 +79,7 @@ export const PageWrapper = ({
         teamScore,
         decreaseActionPoints,
         increaseTeamScore,
+        todaysEvent,
       }}
     >
       <div className="flex flex-row">
@@ -106,9 +110,9 @@ export const PageWrapper = ({
               href={game.teamsChannels[user.game.team]}
               target="_blank"
               rel="noopener"
-              className="text-purple-600 hover:underline"
+              className="text-sm text-purple-600 px-2 py-1 border bg-purple-50 rounded cursor-pointer hover:underline"
             >
-              Join your teams discussion
+              Join your team to discuss tactics
             </a>
           </div>
           <ActivityZone />

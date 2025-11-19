@@ -4,10 +4,12 @@ import { resetUserActionPoints } from "../data/user";
 import redis from "../services/redis";
 import { constructTeamKey } from "../utils/construct-team-key";
 import { isWithinEventDate } from "../utils/is-within-event-date";
+import { addBulletinForEvent } from "./add-bulletin-for-event";
 import { calculateMVE } from "./calculate-mve";
 import { handleInactive } from "./handle-inactive";
 
 // TODO: Run on instance 0 only
+// TODO: Revert isWithinEvent
 export const backgroundProcessor = async () => {
   const dayOfWeek = new Date().getDay();
   const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
@@ -35,6 +37,6 @@ export const backgroundProcessor = async () => {
   }
 
   await resetUserActionPoints();
-
   await calculateMVE();
+  await addBulletinForEvent();
 };
