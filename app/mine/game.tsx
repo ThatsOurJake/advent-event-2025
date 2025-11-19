@@ -2,23 +2,31 @@
 
 import Link from "next/link";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { LocationClosed } from "../components/location-closed";
 import { AppContext } from "../components/page-wrapper";
+import { calculateTaskOutcome } from "../utils/calculate-task-outcome";
 import { rngSeeded } from "../utils/random";
 import { reportGameResult } from "../utils/report-game-result";
 
 interface MiningGameResult {
   didMineOre: boolean;
+  taskOutcome: number;
 }
 
 const MiningGame = () => {
   const {
     decreaseActionPoints,
     user: {
+      userId,
       game: { actionPoints },
     },
+    todaysEvent,
   } = useContext(AppContext);
   const isPlaying = useRef<boolean>(true);
   const [result, setResult] = useState<MiningGameResult | null>(null);
+  const isLocationClosed =
+    todaysEvent?.type === "LOCATION_CLOSED" &&
+    todaysEvent?.data.location === "mine";
 
   const positionMinebarZone = useCallback(() => {
     const minebarZone = document.getElementById("mine-bar-zone");
@@ -106,15 +114,20 @@ const MiningGame = () => {
         indicatorRect.left + middle >= minebarZoneRect.left &&
         indicatorRect.right - middle <= minebarZoneRect.right;
 
-      const result = {
+      const result: MiningGameResult = {
         didMineOre: isInZone,
+        taskOutcome: calculateTaskOutcome(userId, actionPoints, "mine"),
       };
 
       setResult(result);
       decreaseActionPoints();
       reportGameResult("mine", result);
     }
-  }, [decreaseActionPoints]);
+  }, [decreaseActionPoints, actionPoints, userId]);
+
+  if (isLocationClosed) {
+    return <LocationClosed />;
+  }
 
   return (
     <div className="flex flex-col items-center w-md md:w-lg mx-auto">
@@ -174,8 +187,8 @@ const MiningGame = () => {
         <section className="w-full rounded-md bg-white p-2 border-2 mb-2 text-center">
           {result.didMineOre && (
             <p>
-              You consumed 1 action point and mined 1 ore ✨ - Your team mates
-              will be pleased!
+              You consumed 1 action point and mined <b>{result.taskOutcome}</b>{" "}
+              ore ✨ - Your team mates will be pleased!
             </p>
           )}
           {!result.didMineOre && (

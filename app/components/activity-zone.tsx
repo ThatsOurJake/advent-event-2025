@@ -5,6 +5,7 @@ import type { ActivityItemDTO } from "../data/get-activity-feed";
 import { regularlyFetch } from "../utils/regularly-fetch";
 import { AppContext } from "./page-wrapper";
 
+// TODO: Take into account the number produced
 const constructMessage = (item: ActivityItemDTO) => {
   const name = item.user ? item.user.name : "Someone";
 

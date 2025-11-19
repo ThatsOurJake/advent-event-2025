@@ -14,5 +14,31 @@
     "green": "https://teams.microsoft.com/l/team/19%3AtwvZnJIrW-NZsjA0Bm5hyl_y3G0ZkdCD3iNjVZuIkKs1%40thread.tacv2/conversations?groupId=6078f39f-f549-41b4-aae5-9f04c624c69e&tenantId=68b865d5-cf18-4b2b-82a4-a4eddb9c5237",
     "blue": "https://teams.microsoft.com/l/team/19%3ASFdAzUprDF4eGfUD8NVbR-xt4BouD2boYCJ8ZONLkIo1%40thread.tacv2/conversations?groupId=eefd7134-75c8-4636-ac8b-b21e9357014c&tenantId=68b865d5-cf18-4b2b-82a4-a4eddb9c5237"
   },
-  "events": []
+  "events": [
+    {
+      "date": "02/12/2025",
+      "type": "LOCATION_CLOSED",
+      "data": {
+        "location": "mine"
+      },
+      "message": "There has been a collapse in the mine meaning this location will be closed today."
+    },
+    {
+      "date": "05/12/2025",
+      "type": "GLOBAL_RESOURCE_INCREASE",
+      "data": {
+        "percentageChance": 30,
+        "increaseTo": 2
+      },
+      "message": "Santa left a bowl of Candy Canes for motivation, each action has a 30% chance of doubling its output."
+    },
+    {
+      "date": "09/12/2025",
+      "type": "LOCATION_CLOSED",
+      "data": {
+        "location": "sleigh"
+      },
+      "message": "The sleigh cannot handle all the presents being produced and needs reinforcing. This will take all day."
+    }
+  ]
 }

@@ -9,8 +9,11 @@ import {
   useRef,
   useState,
 } from "react";
+import { LocationClosed } from "../components/location-closed";
 import { AppContext } from "../components/page-wrapper";
+import { calculateTaskOutcome } from "../utils/calculate-task-outcome";
 import { rngSeeded } from "../utils/random";
+import { reportGameResult } from "../utils/report-game-result";
 
 const BeatMarker = ({
   animatedDelay,
@@ -49,6 +52,7 @@ const generateBeatMap = (actionPoints: number) => {
 
 interface ForgeGameResult {
   passed: boolean;
+  taskOutcome: number;
 }
 
 interface ForgeGameProps {
@@ -58,10 +62,16 @@ interface ForgeGameProps {
 const ForgeGame = ({ oreStored }: ForgeGameProps) => {
   const {
     user: {
+      userId,
       game: { actionPoints },
     },
     decreaseActionPoints,
+    todaysEvent,
   } = useContext(AppContext);
+
+  const isLocationClosed =
+    todaysEvent?.type === "LOCATION_CLOSED" &&
+    todaysEvent?.data.location === "forge";
 
   const beatMap = useMemo(() => generateBeatMap(actionPoints), [actionPoints]);
   const duration = 3000;
@@ -113,22 +123,13 @@ const ForgeGame = ({ oreStored }: ForgeGameProps) => {
   const hitTimes = useRef<number[]>([]);
 
   const onStart = useCallback(async () => {
-    const res = await fetch("/api/game", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        game: "forge",
-        action: "start",
-      }),
+    const { success } = await reportGameResult("forge", {
+      action: "start",
     });
-
-    const data = await res.json();
 
     setPlayed(true);
 
-    if (data.success) {
+    if (success) {
       setIsPlaying(true);
       decreaseActionPoints();
       document.getElementById("forge-back")?.classList.add("fire-glow");
@@ -203,20 +204,14 @@ const ForgeGame = ({ oreStored }: ForgeGameProps) => {
 
     setResult({
       passed,
+      taskOutcome: calculateTaskOutcome(userId, actionPoints, "forge"),
     });
 
-    fetch("/api/game", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        game: "forge",
-        action: "end",
-        passed,
-      }),
+    reportGameResult("forge", {
+      passed,
+      action: "end",
     });
-  }, [calcAccuracy]);
+  }, [calcAccuracy, userId, actionPoints]);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -239,6 +234,10 @@ const ForgeGame = ({ oreStored }: ForgeGameProps) => {
       clearTimeout(timeout);
     };
   }, [isPlaying, determineGameResult, cumulativeDelay]);
+
+  if (isLocationClosed) {
+    return <LocationClosed />;
+  }
 
   return (
     <div className="flex flex-col items-center w-md md:w-lg mx-auto">
@@ -312,8 +311,9 @@ const ForgeGame = ({ oreStored }: ForgeGameProps) => {
         <section className="w-full rounded-md bg-white p-2 border-2 mb-2 text-center">
           {result.passed && (
             <p>
-              You successfully smelted the ore and gained a gift mound, your
-              fellow elves will be pleased!
+              You successfully smelted the ore and gained{" "}
+              <b>{result.taskOutcome}</b> gift mound(s), your fellow elves will
+              be pleased!
             </p>
           )}
           {!result.passed && (

@@ -1,9 +1,9 @@
 - Fix TODOs and try to make it Screen reader friendly
 - Event system to mix up the game
-  - Day 2: Mines are closed [Location Closed]
-  - Day 5: Candy Cane Rush, AP have 30% to produce double resource (not score) [RESOURCE_INCREASE]
-  - Day 9: 
-  - Day 12:
+  - Day 2: Mines are closed [LOCATION_CLOSED]
+  - Day 5: Candy Cane Rush, AP have 30% to produce double resource (not score) [GLOBAL_RESOURCE_INCREASE]
+  - Day 9: Sleigh Repairs [LOCATION_CLOSED]
+  - Day 12: ???
 - Historic Stats to show graphs
 - Pre-Register if before start date
 - Bug reporting and guide to the game

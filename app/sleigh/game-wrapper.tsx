@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { LocationClosed } from "../components/location-closed";
 import { AppContext } from "../components/page-wrapper";
 import { rngSeeded } from "../utils/random";
+import { reportGameResult } from "../utils/report-game-result";
 import {
   type BumperPattern,
   GAME_EVENTS,
@@ -27,6 +29,7 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
     },
     decreaseActionPoints,
     increaseTeamScore,
+    todaysEvent,
   } = useContext(AppContext);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -35,6 +38,10 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
   const setBumperPatternRef = useRef<(pattern: BumperPattern) => void>(null);
   const [result, setGameResult] = useState<SleighGameResult | null>(null);
   const [canReleaseGift, setCanReleaseGift] = useState<boolean>(true);
+
+  const isLocationClosed =
+    todaysEvent?.type === "LOCATION_CLOSED" &&
+    todaysEvent?.data.location === "sleigh";
 
   useEffect(() => {
     const load = async () => {
@@ -75,16 +82,9 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
       () => {
         setGameResult({ caughtGift: true });
         increaseTeamScore();
-        fetch("/api/game", {
-          body: JSON.stringify({
-            game: "sleigh",
-            action: "end",
-            passed: true,
-          }),
-          headers: {
-            "content-type": "application/json",
-          },
-          method: "POST",
+        reportGameResult("sleigh", {
+          action: "end",
+          passed: true,
         });
       },
       { once: true },
@@ -93,16 +93,9 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
       GAME_EVENTS.MISSED,
       () => {
         setGameResult({ caughtGift: false });
-        fetch("/api/game", {
-          body: JSON.stringify({
-            game: "sleigh",
-            action: "end",
-            passed: false,
-          }),
-          headers: {
-            "content-type": "application/json",
-          },
-          method: "POST",
+        reportGameResult("sleigh", {
+          action: "end",
+          passed: false,
         });
       },
       { once: true },
@@ -114,20 +107,11 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
       return;
     }
 
-    const res = await fetch("/api/game", {
-      body: JSON.stringify({
-        game: "sleigh",
-        action: "start",
-      }),
-      headers: {
-        "content-type": "application/json",
-      },
-      method: "POST",
+    const { success } = await reportGameResult("sleigh", {
+      action: "start",
     });
 
-    const data = await res.json();
-
-    if (data.success) {
+    if (success) {
       const controlsOverlay = document.getElementById("game-controls-overlay");
 
       if (!controlsOverlay) {
@@ -143,6 +127,10 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
 
     setCanReleaseGift(false);
   }, [decreaseActionPoints]);
+
+  if (isLocationClosed) {
+    return <LocationClosed />;
+  }
 
   return (
     <div>

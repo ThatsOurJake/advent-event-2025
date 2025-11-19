@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { LocationClosed } from "../components/location-closed";
 import { AppContext } from "../components/page-wrapper";
+import { calculateTaskOutcome } from "../utils/calculate-task-outcome";
 import { rngSeeded } from "../utils/random";
+import { reportGameResult } from "../utils/report-game-result";
 
 type ValidValues =
   | "blank"
@@ -26,6 +29,7 @@ interface Selection {
 interface WrappingGameResult {
   notEnoughMounds?: boolean;
   passedQA: boolean;
+  taskOutcome: number;
 }
 
 const determineStartingGift = (actionPoints: number): Selection => {
@@ -59,10 +63,16 @@ interface WrappingGameProps {
 const WrappingGame = ({ moundsStored }: WrappingGameProps) => {
   const {
     user: {
+      userId,
       game: { actionPoints },
     },
     decreaseActionPoints,
+    todaysEvent,
   } = useContext(AppContext);
+
+  const isLocationClosed =
+    todaysEvent?.type === "LOCATION_CLOSED" &&
+    todaysEvent?.data.location === "wrap_station";
 
   const [currentSelection, setCurrentSelection] = useState<Selection>({
     bow: "bow-no",
@@ -202,34 +212,37 @@ const WrappingGame = ({ moundsStored }: WrappingGameProps) => {
 
     const gameResult: WrappingGameResult = {
       passedQA,
+      taskOutcome: calculateTaskOutcome(userId, actionPoints, "wrap_station"),
     };
 
-    const res = await fetch("/api/game", {
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        game: "wrap_station",
-        passed: passedQA,
-      }),
-      method: "POST",
+    const { success } = await reportGameResult("wrap_station", {
+      passed: passedQA,
     });
 
-    const data = await res.json();
-
-    if (data.success) {
+    if (success) {
       setResult(gameResult);
       decreaseActionPoints();
     } else {
       setResult({
         notEnoughMounds: true,
         passedQA: false,
+        taskOutcome: 0,
       });
     }
-  }, [currentSelection, targetSelection, decreaseActionPoints]);
+  }, [
+    currentSelection,
+    targetSelection,
+    decreaseActionPoints,
+    userId,
+    actionPoints,
+  ]);
 
   const outputImage = determineImage(currentSelection);
   const inputImage = determineImage(targetSelection);
+
+  if (isLocationClosed) {
+    return <LocationClosed />;
+  }
 
   return (
     <div className="flex flex-col items-center w-4/5 md:w-2/3 mx-auto">
@@ -432,8 +445,9 @@ const WrappingGame = ({ moundsStored }: WrappingGameProps) => {
         <section className="w-full rounded-md bg-white p-2 border-2 mb-2 text-center">
           {result.passedQA && (
             <p>
-              You consumed 1 action point and wrapped one present 🎁 - Your team
-              mates will be pleased!
+              You consumed 1 action point and wrapped{" "}
+              <b>{result.taskOutcome}</b> present(s) 🎁 - Your team mates will
+              be pleased!
             </p>
           )}
           {result.notEnoughMounds && !result.passedQA && (

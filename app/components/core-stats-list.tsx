@@ -15,7 +15,6 @@ export const CoreStatsList = ({ localTeamScore }: CoreStatsListProps) => {
   const {
     game: { team },
   } = user;
-
   const [coreStats, setCoreStats] = useState<CoreStats>({
     giftMounds: {
       collected: 0,

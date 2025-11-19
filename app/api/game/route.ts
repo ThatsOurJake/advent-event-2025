@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await processGame(userId, team, payload.game, payload);
+    const result = await processGame(userId, team, actionPoints, payload.game, payload);
 
     return new Response(JSON.stringify(result || {}), {
       status: 202,
