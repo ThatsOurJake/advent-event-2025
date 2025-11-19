@@ -48,6 +48,7 @@ export const addActivityItem = async ({
 
 export const getActivityItems = async (
   team: teams,
+  limit: number = 3,
 ): Promise<ActivityItemDTO[]> => {
   await connect();
 
@@ -58,8 +59,9 @@ export const getActivityItems = async (
   const activityItems = await activityCollection
     .find({ team })
     .sort({ timestamp: "desc" })
-    .limit(3)
+    .limit(limit)
     .toArray();
+
   const userIds = activityItems.map((x) => x.userId);
   const users = await userCollection
     .find({
@@ -78,6 +80,46 @@ export const getActivityItems = async (
       } : undefined
     }
   });
+
+  return result;
+};
+
+interface AchievementActivity {
+  count: number;
+  userId: string;
+  type: ActivityTypes;
+}
+
+export const getAchievementActivities = async (team: teams) => {
+  await connect();
+
+  const db = client.db();
+  const activityCollection = db.collection<ActivityItem>(ACTIVITY_COLLECTION);
+
+  const result = await activityCollection
+    .aggregate([
+      {
+        $match: { team }
+      },
+      {
+        $group: {
+          _id: { userId: "$userId", type: "$type" },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      },
+      {
+        $project: {
+          _id: 0,
+          userId: "$_id.userId",
+          type: "$_id.type",
+          count: 1
+        }
+      }
+    ])
+    .toArray() as AchievementActivity[];
 
   return result;
 };

@@ -145,12 +145,14 @@ export const getUsersLeftoverAP = async (): Promise<UserTeamCount[]> => {
   return result;
 };
 
+export interface SimplifiedUser {
+  userId: string;
+  name: string;
+};
+
 interface Roster {
   team: teams;
-  users: {
-    userId: string;
-    name: string;
-  }[]
+  users: SimplifiedUser[]
 }
 
 export const getTeamRoster = async () => {

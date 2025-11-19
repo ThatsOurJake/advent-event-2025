@@ -97,6 +97,7 @@ export const handleInactive = async () => {
         dateToShow: todayDate,
         message: bulletinMessageParts.join('\n'),
         team,
+        dismissible: true,
       });
     }
   }

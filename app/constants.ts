@@ -6,8 +6,6 @@ export const KEY_GIFT_STORED = 'gift_stored';
 
 export const KEY_SEEDED = 'seeded';
 
-export const KEY_SCORE = 'score';
-
 export const VALID_LOCATIONS_ARR = [
   "mine",
   "forge",
@@ -15,12 +13,17 @@ export const VALID_LOCATIONS_ARR = [
   "sleigh",
 ] as const;
 
+export const TEAMS_ARR = ["red", "green", "blue"] as const;
+
 export const USER_COLLECTION = "users";
 export const TEAM_COLLECTION = "teams";
 export const ACTIVITY_COLLECTION = "activity";
 export const BULLETIN_COLLECTION = "bulletins";
+export const MVE_COLLECTION = "most-valued-elves";
 
 export const FAILURE_PERCENTAGE = 2; // Below n from 1, 10
 
 // After 5am the game can be access
 export const OPEN_TIME = 5;
+
+export const COOKIE_BULLETINS_DISMISSED = 'COOKIE_BULLETINS_DISMISSED';

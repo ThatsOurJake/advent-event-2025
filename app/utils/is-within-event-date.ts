@@ -1,0 +1,15 @@
+import game from '../../game.json';
+
+const { endDate, startDate } = game;
+
+export const isWithinEventDate = (): boolean => {
+  const now = new Date();
+
+  const [startDay, startMonth, startYear] = startDate.split('/').map(Number);
+  const [endDay, endMonth, endYear] = endDate.split('/').map(Number);
+
+  const start = new Date(startYear, startMonth - 1, startDay);
+  const end = new Date(endYear, endMonth - 1, endDay);
+
+  return now >= start && now <= end;
+};

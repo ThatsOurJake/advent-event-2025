@@ -5,7 +5,6 @@ import {
   KEY_GIFT_STORED,
   KEY_MOUND_STORED,
   KEY_ORE_STORED,
-  KEY_SCORE,
 } from "../../constants";
 import { addActivityItem } from "../../data/get-activity-feed";
 import { updateTeamStats } from "../../data/teams";
@@ -153,7 +152,6 @@ const processSleighGame = async (
   await decrUserActionPoints(userId);
 
   if (action === "end" && passed) {
-    await redis.incr(constructTeamKey(team, KEY_SCORE));
     await updateTeamStats(team, "stats.score", 1);
     await addActivityItem({
       team,
