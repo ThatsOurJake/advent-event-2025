@@ -6,11 +6,9 @@ import type { teams } from "../shared-types";
 
 const { daysGenerateMVE } = game;
 
-// TODO: Change this back
 export const calculateMVE = async () => {
   const dayOfWeek = new Date().getDay();
-  // const is5Day = (dayOfWeek % daysGenerateMVE) === 0;
-  const is5Day = false;
+  const is5Day = (dayOfWeek % daysGenerateMVE) === 0;
 
   if (!is5Day) {
     console.log("Not a 5th Day - Skipping calculating MVEs");

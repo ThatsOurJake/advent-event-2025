@@ -14,6 +14,16 @@ export const isWithinEventDate = (): boolean => {
   return now >= start && now <= end;
 };
 
+export const isBeforeEventDate = (): boolean => {
+  const now = new Date();
+
+  const [startDay, startMonth, startYear] = startDate.split('/').map(Number);
+
+  const start = new Date(startYear, startMonth - 1, startDay);
+
+  return now < start;
+};
+
 export const isAfterEventDate = (): boolean => {
   const now = new Date();
 
@@ -22,4 +32,13 @@ export const isAfterEventDate = (): boolean => {
   const end = new Date(endYear, endMonth - 1, endDay);
 
   return now >= end;
+};
+
+export const isStartDay = (): boolean => {
+  const now = new Date();
+
+  const [startDay, startMonth, startYear] = startDate.split('/').map(Number);
+  const start = new Date(startYear, startMonth - 1, startDay);
+
+  return now === start;
 };

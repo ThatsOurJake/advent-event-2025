@@ -137,7 +137,6 @@ const MiningGame = () => {
         <header className="mb-2">
           <p className="font-bold text-xl">The Mines</p>
         </header>
-        <section className="sr-only">{/* TODO: Screen reader zone */}</section>
         <section aria-hidden>
           <img
             src="/static/mine-entrance.png"

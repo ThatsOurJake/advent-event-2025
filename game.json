@@ -39,6 +39,15 @@
         "location": "sleigh"
       },
       "message": "The sleigh cannot handle all the presents being produced and needs reinforcing. This will take all day."
+    },
+    {
+      "date": "10/12/2025",
+      "type": "CATCH_UP",
+      "data": {
+        "location": "wrap_station",
+        "increaseBy": 5
+      },
+      "message": "Rudolph knocked over some storage crates in a frenzy revealing 5 presents that were added to your storage."
     }
   ]
 }

@@ -22,7 +22,9 @@ export const GenericAvatar = ({ user, isLoggedInUser }: GenericAvatarProps) => {
           style={{ top: "28%", left: "34%", width: "29%" }}
         />
       </div>
-      <p className="truncate w-full px-2 mx-auto mt-1">{user.name}</p>
+      <p className="truncate w-full px-2 mx-auto mt-1 text-center">
+        {user.name}
+      </p>
     </div>
   );
 };

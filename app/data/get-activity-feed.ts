@@ -19,6 +19,7 @@ export interface ActivityItemDTO {
   type: ActivityTypes;
   timestamp: number;
   team: teams;
+  amount: number;
 }
 
 export const addActivityItem = async ({
