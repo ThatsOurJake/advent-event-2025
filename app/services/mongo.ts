@@ -1,17 +1,18 @@
+import cfenv from "cfenv";
 import { MongoClient } from "mongodb";
 
 const getUri = (): string => {
-  // const serviceName = process.env.MONGO_SERVICE_NAME;
-  // const replicaSet = "nimbusReplicaSet";
+  const serviceName = process.env.MONGO_SERVICE_NAME;
+  const replicaSet = "nimbusReplicaSet";
 
-  // if (serviceName) {
-  //   const appEnv = cfenv.getAppEnv();
-  //   const serviceCredentials = appEnv.getServiceCreds(serviceName);
+  if (serviceName) {
+    const appEnv = cfenv.getAppEnv();
+    const serviceCredentials = appEnv.getServiceCreds(serviceName);
 
-  //   if (serviceCredentials) {
-  //     return `${serviceCredentials.uri}?replicaSet=${replicaSet}`;
-  //   }
-  // }
+    if (serviceCredentials) {
+      return `${serviceCredentials.uri}?replicaSet=${replicaSet}`;
+    }
+  }
 
   return "mongodb://mongo:27017/advent";
 };

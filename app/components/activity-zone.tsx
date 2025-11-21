@@ -5,20 +5,19 @@ import type { ActivityItemDTO } from "../data/get-activity-feed";
 import { regularlyFetch } from "../utils/regularly-fetch";
 import { AppContext } from "./page-wrapper";
 
-// TODO: Take into account the number produced
 const constructMessage = (item: ActivityItemDTO) => {
   const name = item.user ? item.user.name : "Someone";
 
   if (item.type === "USE_MINE") {
-    return `${name} just mined ore at the mine ⛏️`;
+    return `${name} just mined "${item.amount}" ore at the mine ⛏️`;
   }
 
   if (item.type === "USE_FORGE") {
-    return `${name} just smelted ore and produced a gift mound 🔥`;
+    return `${name} just smelted "${item.amount}" ore and produced a gift mound 🔥`;
   }
 
   if (item.type === "USE_WRAP") {
-    return `${name} just wrapped a present 🎁`;
+    return `${name} just wrapped "${item.amount}" present(s) 🎁`;
   }
 
   if (item.type === "USE_SLEIGH") {

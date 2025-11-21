@@ -12,10 +12,23 @@ import { COOKIE_BULLETINS_DISMISSED } from "./constants";
 import { getMessages } from "./data/bulletin-board";
 import { getLatestMVE } from "./data/mve";
 import { getTeamScores } from "./data/teams";
-import { isAfterEventDate } from "./utils/event-date-helpers";
+import {
+  isAfterEventDate,
+  isBeforeEventDate,
+} from "./utils/event-date-helpers";
 import { mapTeamToColour, mapTeamToName } from "./utils/map-team";
 
 const Home = async () => {
+  const eventFinished = isAfterEventDate();
+
+  if (eventFinished) {
+    return redirect("/graphs");
+  }
+
+  if (isBeforeEventDate()) {
+    return redirect("/pre-registration");
+  }
+
   const cookieStore = await cookies();
   const user = await getServerUser();
   const teamColours = mapTeamToColour(user.game.team);
@@ -35,11 +48,6 @@ const Home = async () => {
   ).toLocaleDateString("en-GB");
   const teamScore =
     teamScores.find((x) => x.name === user.game.team)?.stats.score || 0;
-  const eventFinished = isAfterEventDate();
-
-  if (eventFinished) {
-    return redirect("/graphs");
-  }
 
   return (
     <PageWrapper

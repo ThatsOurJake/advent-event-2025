@@ -3,17 +3,18 @@ import { FAILURE_PERCENTAGE } from "../constants";
 import { getTeam, setTeamStat, type Team } from "../data/teams";
 import type { ActivityTypes, teams } from "../shared-types";
 import { calculateTaskOutcome } from "../utils/calculate-task-outcome";
-import { getTodaysEvent } from "../utils/get-todays-event";
+import { type GameEvents, getYesterdaysEvent } from "../utils/get-todays-event";
 import { rng } from "../utils/random";
 
 /**
  * Weighting to allow scoring points more likely
  * With the mine being the least likely as this can be done all the time and we want to try focus on gaining score
  */
-const getValidActivities = (team: Team) => {
-  const todaysEvent = getTodaysEvent();
+const getValidActivities = (team: Team, yesterdaysEvent?: GameEvents) => {
   const locationClosed =
-    todaysEvent?.type === "LOCATION_CLOSED" ? todaysEvent?.data.location : "";
+    yesterdaysEvent?.type === "LOCATION_CLOSED"
+      ? yesterdaysEvent?.data.location
+      : "";
   const result: ActivityTypes[] = [];
 
   const {
@@ -48,9 +49,14 @@ export const spendPoints = async (team: teams, actionPoints: number) => {
   }
 
   const successActions: ActivityTypes[] = [];
+  const yesterdaysEvent = getYesterdaysEvent();
+
+  if (yesterdaysEvent) {
+    console.log(`Yesterdays event was: ${yesterdaysEvent.type}`);
+  }
 
   for (let i = 0; i < actionPoints; i++) {
-    const activities = getValidActivities(teamDB);
+    const activities = getValidActivities(teamDB, yesterdaysEvent);
     const activityIndex = rng(1, activities.length) - 1;
     const activity = activities[activityIndex];
     const successful = rng(1, 10) > FAILURE_PERCENTAGE;
