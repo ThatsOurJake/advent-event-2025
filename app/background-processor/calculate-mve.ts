@@ -51,4 +51,6 @@ export const calculateMVE = async () => {
   await createMVEEntry({
     awards
   });
+
+  console.log('Created MVE');
 };

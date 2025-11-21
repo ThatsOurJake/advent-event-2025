@@ -39,6 +39,7 @@ const processMineGame = async (
       team,
       type: "USE_MINE",
       userId,
+      amount: taskOutcome,
     });
     console.log(`Updated: ${team} ore mined by ${taskOutcome}`);
   }
@@ -84,6 +85,7 @@ const processForgeGame = async (
       team,
       type: "USE_FORGE",
       userId,
+      amount: taskOutcome,
     });
     console.log(`Updated: ${team} gift mounds by ${taskOutcome}`);
   }
@@ -122,6 +124,7 @@ const processWrappingGame = async (
       team,
       type: "USE_WRAP",
       userId,
+      amount: taskOutcome,
     });
     console.log(`Updated: ${team} gifts wrapped by ${taskOutcome}`);
   }
@@ -167,6 +170,7 @@ const processSleighGame = async (
       team,
       type: "USE_SLEIGH",
       userId,
+      amount: 1,
     });
   }
 

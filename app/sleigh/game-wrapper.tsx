@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { LocationClosed } from "../components/location-closed";
 import { AppContext } from "../components/page-wrapper";
+import { isAfterEventDate } from "../utils/event-date-helpers";
 import { rngSeeded } from "../utils/random";
 import { reportGameResult } from "../utils/report-game-result";
 import {
@@ -40,8 +41,9 @@ const SleighGame = ({ giftsStored }: SleighGameProps) => {
   const [canReleaseGift, setCanReleaseGift] = useState<boolean>(true);
 
   const isLocationClosed =
-    todaysEvent?.type === "LOCATION_CLOSED" &&
-    todaysEvent?.data.location === "sleigh";
+    (todaysEvent?.type === "LOCATION_CLOSED" &&
+      todaysEvent?.data.location === "sleigh") ||
+    isAfterEventDate();
 
   useEffect(() => {
     const load = async () => {

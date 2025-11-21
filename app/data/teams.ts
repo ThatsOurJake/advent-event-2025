@@ -1,5 +1,5 @@
 import type { WithId } from "mongodb";
-import { TEAM_COLLECTION } from "../constants";
+import { TEAM_COLLECTION, TEAM_SNAPSHOT_COLLECTION } from "../constants";
 import { client, connect } from "../services/mongo";
 import type { teams } from "../shared-types";
 
@@ -20,6 +20,11 @@ export interface Team {
       stored: number;
     };
   };
+}
+
+export interface Snapshot {
+  timestamp: number;
+  snapshot: Team[];
 }
 
 export const createTeam = async (team: Team) => {
@@ -143,4 +148,37 @@ export const updateTeamsNightlyResources = async () => {
   }
 
   return output;
+};
+
+// Creates a snapshot backup of the team to be used for graphs
+export const createSnapshot = async () => {
+  await connect();
+
+  const db = client.db();
+  const teamCollection = db.collection<Team>(TEAM_COLLECTION);
+  const snapshotCollection = db.collection<Snapshot>(TEAM_SNAPSHOT_COLLECTION);
+
+  const teams = await teamCollection.find({}).toArray();
+  const snapshot: Snapshot = {
+    snapshot: teams,
+    timestamp: Date.now(),
+  };
+
+  const { acknowledged } = await snapshotCollection.insertOne(snapshot);
+
+  if (acknowledged) {
+    console.log(`Created Snapshot`);
+    return;
+  }
+
+  console.error(`Snapshot failed`);
+};
+
+export const getSnapshots = async () => {
+  await connect();
+
+  const db = client.db();
+  const snapshotCollection = db.collection<Snapshot>(TEAM_SNAPSHOT_COLLECTION);
+
+  return snapshotCollection.find({}).sort({ timestamp: 'asc' }).toArray();
 };

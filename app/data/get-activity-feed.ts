@@ -8,6 +8,7 @@ export interface ActivityItem {
   type: ActivityTypes;
   timestamp: number;
   team: teams;
+  amount: number;
 }
 
 export interface ActivityItemDTO {
@@ -24,12 +25,14 @@ export const addActivityItem = async ({
   team,
   type,
   userId,
+  amount,
 }: Omit<ActivityItem, "timestamp">) => {
   const item: ActivityItem = {
     team,
     timestamp: Date.now(),
     type,
     userId,
+    amount,
   };
 
   await connect();
@@ -122,4 +125,13 @@ export const getAchievementActivities = async (team: teams) => {
     .toArray() as AchievementActivity[];
 
   return result;
+};
+
+export const getUsersActivity = async (userId: string) => {
+  await connect();
+
+  const db = client.db();
+  const activityCollection = db.collection<ActivityItem>(ACTIVITY_COLLECTION);
+
+  return activityCollection.find({ userId }).sort({ timestamp: 'asc' }).toArray();
 };

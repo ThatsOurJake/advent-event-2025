@@ -12,6 +12,7 @@ import {
 import { LocationClosed } from "../components/location-closed";
 import { AppContext } from "../components/page-wrapper";
 import { calculateTaskOutcome } from "../utils/calculate-task-outcome";
+import { isAfterEventDate } from "../utils/event-date-helpers";
 import { rngSeeded } from "../utils/random";
 import { reportGameResult } from "../utils/report-game-result";
 
@@ -70,8 +71,9 @@ const ForgeGame = ({ oreStored }: ForgeGameProps) => {
   } = useContext(AppContext);
 
   const isLocationClosed =
-    todaysEvent?.type === "LOCATION_CLOSED" &&
-    todaysEvent?.data.location === "forge";
+    (todaysEvent?.type === "LOCATION_CLOSED" &&
+      todaysEvent?.data.location === "forge") ||
+    isAfterEventDate();
 
   const beatMap = useMemo(() => generateBeatMap(actionPoints), [actionPoints]);
   const duration = 3000;
