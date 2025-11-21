@@ -13,3 +13,13 @@ export const isWithinEventDate = (): boolean => {
 
   return now >= start && now <= end;
 };
+
+export const isAfterEventDate = (): boolean => {
+  const now = new Date();
+
+  const [endDay, endMonth, endYear] = endDate.split('/').map(Number);
+
+  const end = new Date(endYear, endMonth - 1, endDay);
+
+  return now >= end;
+};

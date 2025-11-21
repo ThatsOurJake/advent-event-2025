@@ -1,9 +1,9 @@
 import { KEY_GIFT_STORED, KEY_MOUND_STORED, KEY_ORE_STORED } from "../constants";
-import { updateTeamsNightlyResources } from "../data/teams";
+import { createSnapshot, updateTeamsNightlyResources } from "../data/teams";
 import { resetUserActionPoints } from "../data/user";
 import redis from "../services/redis";
 import { constructTeamKey } from "../utils/construct-team-key";
-import { isWithinEventDate } from "../utils/is-within-event-date";
+import { isWithinEventDate } from "../utils/event-date-helpers";
 import { addBulletinForEvent } from "./add-bulletin-for-event";
 import { calculateMVE } from "./calculate-mve";
 import { handleInactive } from "./handle-inactive";
@@ -39,4 +39,5 @@ export const backgroundProcessor = async () => {
   await resetUserActionPoints();
   await calculateMVE();
   await addBulletinForEvent();
+  await createSnapshot();
 };

@@ -5,6 +5,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { LocationClosed } from "../components/location-closed";
 import { AppContext } from "../components/page-wrapper";
 import { calculateTaskOutcome } from "../utils/calculate-task-outcome";
+import { isAfterEventDate } from "../utils/event-date-helpers";
 import { rngSeeded } from "../utils/random";
 import { reportGameResult } from "../utils/report-game-result";
 
@@ -25,8 +26,9 @@ const MiningGame = () => {
   const isPlaying = useRef<boolean>(true);
   const [result, setResult] = useState<MiningGameResult | null>(null);
   const isLocationClosed =
-    todaysEvent?.type === "LOCATION_CLOSED" &&
-    todaysEvent?.data.location === "mine";
+    (todaysEvent?.type === "LOCATION_CLOSED" &&
+      todaysEvent?.data.location === "mine") ||
+    isAfterEventDate();
 
   const positionMinebarZone = useCallback(() => {
     const minebarZone = document.getElementById("mine-bar-zone");

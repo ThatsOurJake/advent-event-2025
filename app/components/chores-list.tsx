@@ -13,10 +13,8 @@ export const ChoreList = () => {
     },
     todaysEvent,
   } = useContext(AppContext);
-  const isTodaysEventLocationClosed = todaysEvent?.type === "LOCATION_CLOSED";
-  const closedLocation = isTodaysEventLocationClosed
-    ? todaysEvent.data.location
-    : "";
+  const closedLocation =
+    todaysEvent?.type === "LOCATION_CLOSED" ? todaysEvent.data.location : "";
 
   const [locationStats, setLocationStats] = useState<GetLocationStatsResp>({
     forge: 0,

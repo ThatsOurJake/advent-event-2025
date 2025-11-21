@@ -20,6 +20,7 @@ export const TEAM_COLLECTION = "teams";
 export const ACTIVITY_COLLECTION = "activity";
 export const BULLETIN_COLLECTION = "bulletins";
 export const MVE_COLLECTION = "most-valued-elves";
+export const TEAM_SNAPSHOT_COLLECTION = "teams-snapshot";
 
 export const FAILURE_PERCENTAGE = 2; // Below n from 1, 10
 

@@ -5,6 +5,7 @@ import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { LocationClosed } from "../components/location-closed";
 import { AppContext } from "../components/page-wrapper";
 import { calculateTaskOutcome } from "../utils/calculate-task-outcome";
+import { isAfterEventDate } from "../utils/event-date-helpers";
 import { rngSeeded } from "../utils/random";
 import { reportGameResult } from "../utils/report-game-result";
 
@@ -71,8 +72,9 @@ const WrappingGame = ({ moundsStored }: WrappingGameProps) => {
   } = useContext(AppContext);
 
   const isLocationClosed =
-    todaysEvent?.type === "LOCATION_CLOSED" &&
-    todaysEvent?.data.location === "wrap_station";
+    (todaysEvent?.type === "LOCATION_CLOSED" &&
+      todaysEvent?.data.location === "wrap_station") ||
+    isAfterEventDate();
 
   const [currentSelection, setCurrentSelection] = useState<Selection>({
     bow: "bow-no",
