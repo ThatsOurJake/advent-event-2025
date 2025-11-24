@@ -1,12 +1,11 @@
-import type { NextApiRequest } from "next";
+import type { NextRequest } from "next/server";
 import { auth } from "../../../auth";
 import { getActivityItems } from "../../../data/get-activity-feed";
 import { getUser } from "../../../data/user";
-import type { teams } from "../../../shared-types";
 
 export async function GET(
-  _req: NextApiRequest,
-  { params }: { params: Promise<{ team: teams }> },
+  _req: NextRequest,
+  { params }: RouteContext<'/api/activity-feed/[team]'>
 ) {
   const { team } = await params;
   const session = await auth();
@@ -31,7 +30,7 @@ export async function GET(
 
   return new Response(JSON.stringify(activityFeed), {
     headers: {
-      'content-type': 'application/json'
-    }
+      "content-type": "application/json",
+    },
   });
 }

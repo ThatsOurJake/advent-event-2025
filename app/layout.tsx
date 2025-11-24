@@ -19,6 +19,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script src="/register-sw.js"></script>
+      </head>
       <body className={`${font.variable} antialiased`}>
         <div className="bg-stone-400 min-w-screen min-h-screen">
           <div className="container mx-auto py-4">{children}</div>

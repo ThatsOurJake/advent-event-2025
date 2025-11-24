@@ -1,0 +1,5 @@
+.next
+mongo
+redis
+node_modules
+.env.*

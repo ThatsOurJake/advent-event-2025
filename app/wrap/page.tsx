@@ -26,4 +26,6 @@ const WrapPage = async () => {
   );
 };
 
+export const dynamic = "force-dynamic";
+
 export default WrapPage;

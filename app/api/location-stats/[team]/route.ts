@@ -1,4 +1,4 @@
-import type { NextApiRequest } from "next";
+import type { NextRequest } from "next/server";
 import { VALID_LOCATIONS_ARR } from "../../../constants";
 import redis from "../../../services/redis";
 
@@ -19,8 +19,8 @@ export interface GetLocationStatsResp {
 export type validLocations = (typeof VALID_LOCATIONS_ARR)[number];
 
 export async function GET(
-  _req: NextApiRequest,
-  { params }: { params: Promise<{ team: string }> },
+  _req: NextRequest,
+  { params }: RouteContext<'/api/location-stats/[team]'>
 ) {
   const { team } = await params;
 
@@ -44,7 +44,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{ team: string }> },
+  { params }: RouteContext<'/api/location-stats/[team]'>
 ) {
   const { team } = await params;
   const payload: { location: string } = await req.json();
@@ -73,7 +73,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{ team: string }> },
+  { params }: RouteContext<'/api/location-stats/[team]'>
 ) {
   const { team } = await params;
   const payload: { location: string } = await req.json();

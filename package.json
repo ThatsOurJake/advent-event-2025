@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --experimental-build-mode compile",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"
@@ -12,6 +12,8 @@
   "dependencies": {
     "@types/cfenv": "^1.2.4",
     "@types/js-cookie": "^3.0.6",
+    "axios": "^1.13.2",
+    "axios-cache-interceptor": "^1.8.3",
     "cfenv": "^1.2.4",
     "env-helpers": "^1.2.0",
     "ioredis": "^5.8.2",
@@ -20,6 +22,7 @@
     "next": "16.0.1",
     "next-auth": "5.0.0-beta.30",
     "phaser": "3.90.0",
+    "proxy-agent": "^6.5.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-markdown": "^10.1.0",

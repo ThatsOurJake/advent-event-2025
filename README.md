@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Advent Event 2025
 
-## Getting Started
+This readme contains all you might want to know about this game event.
 
-First, run the development server:
+## The concept
+This years event main aim is to promote teamwork in which each player gets separated into one of the three elf factions, red, green, blue. The players are then to work together to load presents onto the sleigh through four actions
+- Mining ore
+- Forging ore
+- Wrapping gifts
+- Loading onto the sleigh
+The catch is each day there are only 3 action points so a player has to choose which tasks they want to spend these points on, is it mine 3 ore or wrap 2 presents and forge one ore into a gift mound. The second catch is, what is produced today does not become available until the next day of the event.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The event is to also run for a short length of time to try and keep engagement high.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## The implementation
+With the initial concept there were a few problems I needed to try circumvent:
+- Concurrency of players
+- People losing interest
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Credits
+Various assets have been various websites
+- https://www.flaticon.com/authors/wanicon
+- https://www.flaticon.com/authors/iconic-panda
+- https://www.freepik.com
+- https://www.flaticon.com/authors/san-d
+- https://www.flaticon.com/authors/muhammad-waqas-khan
+- https://www.vecteezy.com/vector-art/33216107-seamless-pattern-of-cute-frog-wear-scarf-sit-in-circle-background-reptile-animal-character-cartoon-design-baby-clothing-kawaii-vector-illustration
+- https://www.shutterstock.com/search/cute-stars-pattern
+- [Christmas tree icons created by Aranagraphics - Flaticon](https://www.flaticon.com/free-icons/christmas-tree)

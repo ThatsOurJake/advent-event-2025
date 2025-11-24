@@ -26,4 +26,6 @@ const SleighPage = async () => {
   );
 };
 
+export const dynamic = "force-dynamic";
+
 export default SleighPage;
