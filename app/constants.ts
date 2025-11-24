@@ -1,3 +1,5 @@
+import { envStr } from "env-helpers";
+
 export const STARTING_AP = 3;
 
 export const KEY_ORE_STORED = 'ore_stored';
@@ -28,3 +30,5 @@ export const FAILURE_PERCENTAGE = 2; // Below n from 1, 10
 export const OPEN_TIME = 5;
 
 export const COOKIE_BULLETINS_DISMISSED = 'COOKIE_BULLETINS_DISMISSED';
+
+export const CRON_SCHEDULE = envStr('CRON_SCHEDULE', '0 1 * * *') // 1am Everyday

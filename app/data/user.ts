@@ -49,6 +49,7 @@ export const createUser = async ({ name, sub }: CreateUserOpts) => {
   const { acknowledged } = await collection.insertOne(user);
 
   if (acknowledged) {
+    console.log(`Created user and assigned them to ${assignedTeam}`);
     return user;
   }
 

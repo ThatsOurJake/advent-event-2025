@@ -184,6 +184,8 @@ export const processGame = async (
   game: validLocations,
   payload: object,
 ): Promise<object | undefined> => {
+  console.log(`Processing game: ${game} - ${payload}`);
+
   if (game === "mine") {
     return processMineGame(userId, team, actionPoints, payload as PostGameMinePayload);
   }

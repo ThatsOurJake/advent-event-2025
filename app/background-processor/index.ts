@@ -19,6 +19,11 @@ export const backgroundProcessor = async () => {
   const isInstanceZero = getInstanceNumber() === 0;
   const isWithinEvent = isWithinEventDate();
 
+  if (!isInstanceZero) {
+    console.log(`Skipping job as service is not instance 0`);
+    return;
+  }
+
   if (isWeekend) {
     console.log(`Is the weekend - workshop is closed`);
     return;
@@ -26,11 +31,6 @@ export const backgroundProcessor = async () => {
 
   if (!isWithinEvent || isStartDay()) {
     console.log(`Event is yet to start or pass day 1`);
-    return;
-  }
-
-  if (!isInstanceZero) {
-    console.log(`Skipping job as service is not instance 0`);
     return;
   }
 
