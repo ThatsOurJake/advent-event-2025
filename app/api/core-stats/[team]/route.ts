@@ -1,12 +1,11 @@
-import type { NextApiRequest } from "next";
+import type { NextRequest } from "next/server";
 import { auth } from "../../../auth";
 import { getCoreStats } from "../../../data/core-stats";
 import { getUser } from "../../../data/user";
-import type { teams } from "../../../shared-types";
 
 export async function GET(
-  _req: NextApiRequest,
-  { params }: { params: Promise<{ team: teams }> },
+  _req: NextRequest,
+  { params }: RouteContext<'/api/core-stats/[team]'>
 ) {
   const { team } = await params;
   const session = await auth();
