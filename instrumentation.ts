@@ -1,5 +1,8 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    await require('pino');
+    await require('next-logger');
+
     const { seedDB } = await import("./app/data/seed");
     const { getInstanceNumber } = await import("./app/utils/get-instance-number");
 
