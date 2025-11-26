@@ -11,7 +11,7 @@ COPY next.config.ts next.config.ts
 COPY package-lock.json package-lock.json
 COPY package.json package.json
 
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 FROM base AS build
 
@@ -27,7 +27,7 @@ WORKDIR /app
 
 RUN rm -rf node_modules
 
-RUN pnpm install --prod
+RUN pnpm install --prod --frozen-lockfile
 
 FROM node:24-alpine
 
