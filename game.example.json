@@ -1,0 +1,53 @@
+{
+  "startingStats": {
+    "ore": 0,
+    "giftMounds": 10,
+    "wrappedGifts": 10
+  },
+  "daysGenerateMVE": 5,
+  "startDate": "01/12/2025",
+  "endDate": "15/12/2025",
+  "bugFormLink": "",
+  "gameGuideLink": "",
+  "teamsChannels": {
+    "red": "",
+    "green": "",
+    "blue": ""
+  },
+  "events": [
+    {
+      "date": "02/12/2025",
+      "type": "LOCATION_CLOSED",
+      "data": {
+        "location": "mine"
+      },
+      "message": "There has been a collapse in the mine meaning this location will be closed today."
+    },
+    {
+      "date": "05/12/2025",
+      "type": "GLOBAL_RESOURCE_INCREASE",
+      "data": {
+        "percentageChance": 30,
+        "increaseTo": 2
+      },
+      "message": "Santa left a bowl of Candy Canes for motivation, each action has a 30% chance of doubling its output."
+    },
+    {
+      "date": "09/12/2025",
+      "type": "LOCATION_CLOSED",
+      "data": {
+        "location": "sleigh"
+      },
+      "message": "The sleigh cannot handle all the presents being produced and needs reinforcing. This will take all day."
+    },
+    {
+      "date": "10/12/2025",
+      "type": "CATCH_UP",
+      "data": {
+        "location": "wrap_station",
+        "increaseBy": 5
+      },
+      "message": "Rudolph knocked over some storage crates in a frenzy revealing 5 presents that were added to your storage."
+    }
+  ]
+}
