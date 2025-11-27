@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import game from "../../game.json";
 import { OPEN_TIME } from "../constants";
 import type { BulletinMessage as BulletinMessageData } from "../data/bulletin-board";

@@ -20,7 +20,7 @@ export const GAME_EVENTS = {
 };
 
 export const loadGame = async () => {
-  const Phaser = await import('phaser');
+  const Phaser = await import("phaser");
 
   // Game state
   let gameStarted = false;
@@ -119,7 +119,9 @@ export const loadGame = async () => {
         catcherSprite.x = newX;
 
         // Update physics body position
-        (catcherSquare.body as Phaser.Physics.Arcade.Body).updateFromGameObject();
+        (
+          catcherSquare.body as Phaser.Physics.Arcade.Body
+        ).updateFromGameObject();
       }
     });
 
@@ -313,7 +315,11 @@ export const loadGame = async () => {
               }
             }
 
-            if (!tooClose && x > bumperRadius && x < GAME_WIDTH - bumperRadius) {
+            if (
+              !tooClose &&
+              x > bumperRadius &&
+              x < GAME_WIDTH - bumperRadius
+            ) {
               const bumper = scene.add.image(x, y, "bumper");
               bumper.setDisplaySize(bumperRadius * 2, bumperRadius * 2); // 40x40 to match circle
               bumper.setRotation(Phaser.Math.FloatBetween(0, Math.PI * 2)); // Random rotation
@@ -557,6 +563,6 @@ export const loadGame = async () => {
     game,
     startGameExternal,
     setBumperPattern,
-    destroyGame
+    destroyGame,
   };
 };

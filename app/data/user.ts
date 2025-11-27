@@ -26,7 +26,6 @@ interface CreateUserOpts {
   name: string;
 }
 
-
 export const createUser = async ({ name, sub }: CreateUserOpts) => {
   await connect();
 
@@ -101,14 +100,20 @@ export const resetUserActionPoints = async () => {
 
   console.log(`Resetting Users Action Points`);
 
-  await collection.updateMany({}, {
-    $set: {
-      'game.actionPoints': STARTING_AP
-    }
-  });
+  await collection.updateMany(
+    {},
+    {
+      $set: {
+        "game.actionPoints": STARTING_AP,
+      },
+    },
+  );
 };
 
-export interface UserTeamCount { _id: teams, count: number }
+export interface UserTeamCount {
+  _id: teams;
+  count: number;
+}
 
 export const getTeamUserCount = async (): Promise<UserTeamCount[]> => {
   await connect();
@@ -116,14 +121,16 @@ export const getTeamUserCount = async (): Promise<UserTeamCount[]> => {
   const db = client.db();
   const collection = db.collection<User>(USER_COLLECTION);
 
-  const result = await collection.aggregate([
-    {
-      $group: {
-        _id: "$game.team",
-        count: { $sum: 1 }
-      }
-    }
-  ]).toArray() as UserTeamCount[];
+  const result = (await collection
+    .aggregate([
+      {
+        $group: {
+          _id: "$game.team",
+          count: { $sum: 1 },
+        },
+      },
+    ])
+    .toArray()) as UserTeamCount[];
 
   return result;
 };
@@ -134,14 +141,16 @@ export const getUsersLeftoverAP = async (): Promise<UserTeamCount[]> => {
   const db = client.db();
   const collection = db.collection<User>(USER_COLLECTION);
 
-  const result = await collection.aggregate([
-    {
-      $group: {
-        _id: "$game.team",
-        count: { $sum: "$game.actionPoints" }
-      }
-    }
-  ]).toArray() as UserTeamCount[];
+  const result = (await collection
+    .aggregate([
+      {
+        $group: {
+          _id: "$game.team",
+          count: { $sum: "$game.actionPoints" },
+        },
+      },
+    ])
+    .toArray()) as UserTeamCount[];
 
   return result;
 };
@@ -149,11 +158,11 @@ export const getUsersLeftoverAP = async (): Promise<UserTeamCount[]> => {
 export interface SimplifiedUser {
   userId: string;
   name: string;
-};
+}
 
 interface Roster {
   team: teams;
-  users: SimplifiedUser[]
+  users: SimplifiedUser[];
 }
 
 export const getTeamRoster = async () => {
@@ -162,26 +171,28 @@ export const getTeamRoster = async () => {
   const db = client.db();
   const collection = db.collection<User>(USER_COLLECTION);
 
-  const result = await collection.aggregate([
-    {
-      $group: {
-        _id: "$game.team",
-        users: {
-          $push: {
-            userId: "$userId",
-            name: "$details.name"
-          }
-        }
-      }
-    },
-    {
-      $project: {
-        _id: 0,
-        team: "$_id",
-        users: 1
-      }
-    }
-  ]).toArray() as Roster[];
+  const result = (await collection
+    .aggregate([
+      {
+        $group: {
+          _id: "$game.team",
+          users: {
+            $push: {
+              userId: "$userId",
+              name: "$details.name",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          team: "$_id",
+          users: 1,
+        },
+      },
+    ])
+    .toArray()) as Roster[];
 
   return result.sort((a, b) => a.team.localeCompare(b.team));
 };

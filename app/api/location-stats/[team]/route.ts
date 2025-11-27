@@ -20,7 +20,7 @@ export type validLocations = (typeof VALID_LOCATIONS_ARR)[number];
 
 export async function GET(
   _req: NextRequest,
-  { params }: RouteContext<'/api/location-stats/[team]'>
+  { params }: RouteContext<"/api/location-stats/[team]">,
 ) {
   const { team } = await params;
 
@@ -44,7 +44,7 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: RouteContext<'/api/location-stats/[team]'>
+  { params }: RouteContext<"/api/location-stats/[team]">,
 ) {
   const { team } = await params;
   const payload: { location: string } = await req.json();
@@ -73,7 +73,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: RouteContext<'/api/location-stats/[team]'>
+  { params }: RouteContext<"/api/location-stats/[team]">,
 ) {
   const { team } = await params;
   const payload: { location: string } = await req.json();

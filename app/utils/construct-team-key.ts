@@ -1,1 +1,2 @@
-export const constructTeamKey = (team: string, redisKey: string) => `${team}:${redisKey}`;
+export const constructTeamKey = (team: string, redisKey: string) =>
+  `${team}:${redisKey}`;

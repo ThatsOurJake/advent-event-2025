@@ -59,45 +59,59 @@ export const getTeam = async (team: teams): Promise<Team | null> => {
   return {
     name: teamDB.name,
     stats: teamDB.stats,
-  }
+  };
 };
 
-type DotNotation<T, Prefix extends string = ''> = {
+type DotNotation<T, Prefix extends string = ""> = {
   [K in keyof T]: T[K] extends object
-  ? K extends string
-  ? DotNotation<T[K], `${Prefix}${K}.`>
-  : never
-  : K extends string
-  ? `${Prefix}${K}`
-  : never;
+    ? K extends string
+      ? DotNotation<T[K], `${Prefix}${K}.`>
+      : never
+    : K extends string
+      ? `${Prefix}${K}`
+      : never;
 }[keyof T];
 
-type TeamStatsPaths = DotNotation<Team['stats'], 'stats.'>;
+type TeamStatsPaths = DotNotation<Team["stats"], "stats.">;
 
-export const updateTeamStats = async (team: teams, path: TeamStatsPaths, byValue: number) => {
+export const updateTeamStats = async (
+  team: teams,
+  path: TeamStatsPaths,
+  byValue: number,
+) => {
   await connect();
 
   const db = client.db();
   const collection = db.collection<Team>(TEAM_COLLECTION);
 
-  await collection.findOneAndUpdate({
-    name: team,
-  }, {
-    $inc: { [path]: byValue }
-  });
+  await collection.findOneAndUpdate(
+    {
+      name: team,
+    },
+    {
+      $inc: { [path]: byValue },
+    },
+  );
 };
 
-export const setTeamStat = async (team: teams, path: TeamStatsPaths, newValue: number) => {
+export const setTeamStat = async (
+  team: teams,
+  path: TeamStatsPaths,
+  newValue: number,
+) => {
   await connect();
 
   const db = client.db();
   const collection = db.collection<Team>(TEAM_COLLECTION);
 
-  await collection.findOneAndUpdate({
-    name: team,
-  }, {
-    $set: { [path]: newValue }
-  });
+  await collection.findOneAndUpdate(
+    {
+      name: team,
+    },
+    {
+      $set: { [path]: newValue },
+    },
+  );
 };
 
 export const getTeamScores = async () => {
@@ -106,7 +120,13 @@ export const getTeamScores = async () => {
   const db = client.db();
   const collection = db.collection<Team>(TEAM_COLLECTION);
 
-  return collection.find({}).project<{ name: teams; stats: { score: number } }>({ 'stats.score': 1, name: 1 }).toArray();
+  return collection
+    .find({})
+    .project<{ name: teams; stats: { score: number } }>({
+      "stats.score": 1,
+      name: 1,
+    })
+    .toArray();
 };
 
 export const updateTeamsNightlyResources = async () => {
@@ -116,34 +136,44 @@ export const updateTeamsNightlyResources = async () => {
   const collection = db.collection<Team>(TEAM_COLLECTION);
 
   const teams = await collection.find({}).toArray();
-  const output: { team: string; newOreValue: number; newGiftMoundsValue: number; newWrappedGiftsValue: number }[] = [];
+  const output: {
+    team: string;
+    newOreValue: number;
+    newGiftMoundsValue: number;
+    newWrappedGiftsValue: number;
+  }[] = [];
 
   for (const team of teams) {
-    const { stats: { ore, giftMounds, wrappedGifts } } = team;
+    const {
+      stats: { ore, giftMounds, wrappedGifts },
+    } = team;
     console.log(`Updating ${team.name} nightly stats`);
 
     const newOreValue = ore.stored + ore.mined;
     const newGiftMoundsValue = giftMounds.stored + giftMounds.collected;
     const newWrappedGiftsValue = wrappedGifts.stored + wrappedGifts.wrapped;
 
-    await collection.findOneAndUpdate({
-      _id: team._id,
-    }, {
-      $set: {
-        'stats.ore.mined': 0,
-        'stats.giftMounds.collected': 0,
-        'stats.wrappedGifts.wrapped': 0,
-        'stats.ore.stored': newOreValue,
-        'stats.giftMounds.stored': newGiftMoundsValue,
-        'stats.wrappedGifts.stored': newWrappedGiftsValue,
+    await collection.findOneAndUpdate(
+      {
+        _id: team._id,
       },
-    });
+      {
+        $set: {
+          "stats.ore.mined": 0,
+          "stats.giftMounds.collected": 0,
+          "stats.wrappedGifts.wrapped": 0,
+          "stats.ore.stored": newOreValue,
+          "stats.giftMounds.stored": newGiftMoundsValue,
+          "stats.wrappedGifts.stored": newWrappedGiftsValue,
+        },
+      },
+    );
 
     output.push({
       team: team.name,
       newGiftMoundsValue,
       newOreValue,
-      newWrappedGiftsValue
+      newWrappedGiftsValue,
     });
   }
 
@@ -180,5 +210,5 @@ export const getSnapshots = async () => {
   const db = client.db();
   const snapshotCollection = db.collection<Snapshot>(TEAM_SNAPSHOT_COLLECTION);
 
-  return snapshotCollection.find({}).sort({ timestamp: 'asc' }).toArray();
+  return snapshotCollection.find({}).sort({ timestamp: "asc" }).toArray();
 };

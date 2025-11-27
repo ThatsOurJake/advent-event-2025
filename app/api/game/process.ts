@@ -33,7 +33,7 @@ const processMineGame = async (
   await decrUserActionPoints(userId);
 
   if (payload.didMineOre) {
-    const taskOutcome = calculateTaskOutcome(userId, actionPoints, 'mine');
+    const taskOutcome = calculateTaskOutcome(userId, actionPoints, "mine");
     await updateTeamStats(team, "stats.ore.mined", taskOutcome);
     await addActivityItem({
       team,
@@ -79,7 +79,7 @@ const processForgeGame = async (
   await decrUserActionPoints(userId);
 
   if (action === "end" && passed) {
-    const taskOutcome = calculateTaskOutcome(userId, actionPoints, 'forge');
+    const taskOutcome = calculateTaskOutcome(userId, actionPoints, "forge");
     await updateTeamStats(team, "stats.giftMounds.collected", taskOutcome);
     await addActivityItem({
       team,
@@ -118,7 +118,11 @@ const processWrappingGame = async (
   await updateTeamStats(team, "stats.giftMounds.stored", -1);
 
   if (passed) {
-    const taskOutcome = calculateTaskOutcome(userId, actionPoints, 'wrap_station');
+    const taskOutcome = calculateTaskOutcome(
+      userId,
+      actionPoints,
+      "wrap_station",
+    );
     await updateTeamStats(team, "stats.wrappedGifts.wrapped", taskOutcome);
     await addActivityItem({
       team,
@@ -187,11 +191,21 @@ export const processGame = async (
   console.log(`Processing game: ${game} - ${payload}`);
 
   if (game === "mine") {
-    return processMineGame(userId, team, actionPoints, payload as PostGameMinePayload);
+    return processMineGame(
+      userId,
+      team,
+      actionPoints,
+      payload as PostGameMinePayload,
+    );
   }
 
   if (game === "forge") {
-    return processForgeGame(userId, team, actionPoints, payload as PostGameForgePayload);
+    return processForgeGame(
+      userId,
+      team,
+      actionPoints,
+      payload as PostGameForgePayload,
+    );
   }
 
   if (game === "wrap_station") {
