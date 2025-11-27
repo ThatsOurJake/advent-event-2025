@@ -79,10 +79,12 @@ export const getActivityItems = async (
     const user = users.find((x) => x.userId === item.userId);
     return {
       ...item,
-      user: user ? {
-        name: user.details.name
-      } : undefined
-    }
+      user: user
+        ? {
+            name: user.details.name,
+          }
+        : undefined,
+    };
   });
 
   return result;
@@ -100,30 +102,30 @@ export const getAchievementActivities = async (team: teams) => {
   const db = client.db();
   const activityCollection = db.collection<ActivityItem>(ACTIVITY_COLLECTION);
 
-  const result = await activityCollection
+  const result = (await activityCollection
     .aggregate([
       {
-        $match: { team }
+        $match: { team },
       },
       {
         $group: {
           _id: { userId: "$userId", type: "$type" },
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
       {
-        $sort: { count: -1 }
+        $sort: { count: -1 },
       },
       {
         $project: {
           _id: 0,
           userId: "$_id.userId",
           type: "$_id.type",
-          count: 1
-        }
-      }
+          count: 1,
+        },
+      },
     ])
-    .toArray() as AchievementActivity[];
+    .toArray()) as AchievementActivity[];
 
   return result;
 };
@@ -134,5 +136,8 @@ export const getUsersActivity = async (userId: string) => {
   const db = client.db();
   const activityCollection = db.collection<ActivityItem>(ACTIVITY_COLLECTION);
 
-  return activityCollection.find({ userId }).sort({ timestamp: 'asc' }).toArray();
+  return activityCollection
+    .find({ userId })
+    .sort({ timestamp: "asc" })
+    .toArray();
 };

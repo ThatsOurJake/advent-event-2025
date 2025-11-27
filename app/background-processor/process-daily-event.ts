@@ -15,17 +15,19 @@ const processCatchUp = async (todayDate: number, data: CatchUpGameEvent) => {
   }
 
   const { name } = lastPlace;
-  const { data: { increaseBy, location } } = data;
+  const {
+    data: { increaseBy, location },
+  } = data;
 
   switch (location) {
     case "mine":
-      await updateTeamStats(name, 'stats.ore.stored', increaseBy);
+      await updateTeamStats(name, "stats.ore.stored", increaseBy);
       break;
     case "forge":
-      await updateTeamStats(name, 'stats.giftMounds.stored', increaseBy);
+      await updateTeamStats(name, "stats.giftMounds.stored", increaseBy);
       break;
     case "wrap_station":
-      await updateTeamStats(name, 'stats.wrappedGifts.stored', increaseBy);
+      await updateTeamStats(name, "stats.wrappedGifts.stored", increaseBy);
       break;
     default:
       break;

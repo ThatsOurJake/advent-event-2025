@@ -1,5 +1,11 @@
 import gameJson from "../../game.json";
-import { KEY_GIFT_STORED, KEY_MOUND_STORED, KEY_ORE_STORED, KEY_SEEDED, TEAMS_ARR } from "../constants";
+import {
+  KEY_GIFT_STORED,
+  KEY_MOUND_STORED,
+  KEY_ORE_STORED,
+  KEY_SEEDED,
+  TEAMS_ARR,
+} from "../constants";
 import redis from "../services/redis";
 import { constructTeamKey } from "../utils/construct-team-key";
 import { createTeam, getTeam } from "./teams";
@@ -35,9 +41,18 @@ export const seedDB = async () => {
         },
       });
 
-      await redis.set(constructTeamKey(team, KEY_ORE_STORED), startingStats.ore);
-      await redis.set(constructTeamKey(team, KEY_MOUND_STORED), startingStats.giftMounds);
-      await redis.set(constructTeamKey(team, KEY_GIFT_STORED), startingStats.wrappedGifts);
+      await redis.set(
+        constructTeamKey(team, KEY_ORE_STORED),
+        startingStats.ore,
+      );
+      await redis.set(
+        constructTeamKey(team, KEY_MOUND_STORED),
+        startingStats.giftMounds,
+      );
+      await redis.set(
+        constructTeamKey(team, KEY_GIFT_STORED),
+        startingStats.wrappedGifts,
+      );
 
       if (result) {
         console.log(`Created team: ${team}`);

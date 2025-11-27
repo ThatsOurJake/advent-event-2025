@@ -45,6 +45,15 @@ The game also has the concept of events, in which certain days an event to shake
 
 The final part of all this is how I tested the balancing, I could simulate running the background process which would play the game out completely with night elves, so I loaded each team with 5 elves and played through each day making note of the resources stored and overall score to try see if players played to what I have coded as what I thought would be the most efficient way to play how close would the scores at the end be. These scores were very similar with there being an overall winning team so I'm hoping this plays out in the real event too.
 
+### Worth noting
+As with any project I have done for the workplace there are corners cut, this can be due to (rightly so) red tape that doesn't let me do certain things or I not wanting to waste company resource on silly ideas. The main thing each time are assets. Assets should really be hosted behind a CDN and not baked into the final docker image as it can bloat the size. As mentioned I didn't want to host these in CMS and have my own space etc taking away from actual company resource, so they are baked into the container. However the assets being served are slow from the internal cloud hosting platform. So I make heavy use of caching both from the server response and service workers. Also in previous events I've overloaded the dicebear api when loading a full screen of participants so caching has been a big focus.
+
+When we fetch the avatars across the 2 instances of the app, axios will cache this response in memory, this is particularly helpful as everyone has their own unique avatar face. As soon as the player requests theirs the instance will remember their face, this therefore means the "teams" page that shows all the faces is quicker and nicer to dicebear because these responses are in cache. This endpoint then returns a cache time of 2 days to the client ensuring the browser then remembers these faces.
+
+The other cache mentioned was service workers, because NextJS still haven't got their stuff sorted out for this proxy/middleware file, I had to look at a way of intercepting requests to to the assets to cache them. Now NextJS also recommend using a CDN, but the easiest way would have been to add a middleware match `/static` and send cache-headers down. I couldn't do this as the middelware/proxy file is being used to intercept requests to ensure the players are signed in via Entra. So the next step was to intercept these via the service-worker and cache these on the browser for 48 hours also. The service worker intercepts the requests to `/static/*` checks if it's cached, if so return that, if not do the request, on the way back add a header of when it was cached so we can bust it on future requests if that time has passed.
+
+The final thing was remembering 4mb assets 1024xN assets can be a. compressed and b. downscaled when the assets is going to be displayed a 400px wide box.
+
 ## Credits
 This section contains links to assets I had used on the site that required credit attribution:
 - https://www.flaticon.com/authors/wanicon

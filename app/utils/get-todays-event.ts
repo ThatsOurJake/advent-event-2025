@@ -30,7 +30,10 @@ export interface CatchUpGameEvent extends GameEvent {
   };
 }
 
-export type GameEvents = LocationClosedGameEvent | GlobalResourceIncreaseGameEvent | CatchUpGameEvent;
+export type GameEvents =
+  | LocationClosedGameEvent
+  | GlobalResourceIncreaseGameEvent
+  | CatchUpGameEvent;
 
 const getEventByDate = (date: Date): GameEvents | undefined => {
   const day = String(date.getDate()).padStart(2, "0");
@@ -38,7 +41,9 @@ const getEventByDate = (date: Date): GameEvents | undefined => {
   const year = date.getFullYear();
   const dateFormatted = `${day}/${month}/${year}`;
 
-  return game.events.find((event) => event.date === dateFormatted) as GameEvents | undefined;
+  return game.events.find((event) => event.date === dateFormatted) as
+    | GameEvents
+    | undefined;
 };
 
 export const getTodaysEvent = (): GameEvents | undefined => {

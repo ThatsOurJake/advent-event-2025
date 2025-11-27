@@ -8,7 +8,7 @@ const { daysGenerateMVE } = game;
 
 export const calculateMVE = async () => {
   const dayOfWeek = new Date().getDay();
-  const is5Day = (dayOfWeek % daysGenerateMVE) === 0;
+  const is5Day = dayOfWeek % daysGenerateMVE === 0;
 
   if (!is5Day) {
     console.log("Not a 5th Day - Skipping calculating MVEs");
@@ -47,8 +47,8 @@ export const calculateMVE = async () => {
   }
 
   await createMVEEntry({
-    awards
+    awards,
   });
 
-  console.log('Created MVE');
+  console.log("Created MVE");
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import type { validLocations } from "../api/location-stats/[team]/route";
 import { AppContext } from "./page-wrapper";
 

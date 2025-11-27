@@ -71,31 +71,33 @@ export const handleInactive = async () => {
       );
 
       const bulletinMessageParts: string[] = [
-        '🌙 The night elves have been working through the night, this resulted in the following:'
+        "🌙 The night elves have been working through the night, this resulted in the following:",
       ];
 
       for (const entry of activityCounts.entries()) {
         const [activity, count] = entry;
 
         switch (activity) {
-          case 'USE_MINE':
+          case "USE_MINE":
             bulletinMessageParts.push(`- Mined "${count}" ore`);
             break;
-          case 'USE_FORGE':
+          case "USE_FORGE":
             bulletinMessageParts.push(`- Forged "${count}" gift mound(s)`);
             break;
-          case 'USE_WRAP':
+          case "USE_WRAP":
             bulletinMessageParts.push(`- Wrapped "${count}" gift(s)`);
             break;
-          case 'USE_SLEIGH':
-            bulletinMessageParts.push(`- Loaded "${count}" gift(s) on to the sleigh, resulting in +${count} score`);
+          case "USE_SLEIGH":
+            bulletinMessageParts.push(
+              `- Loaded "${count}" gift(s) on to the sleigh, resulting in +${count} score`,
+            );
             break;
         }
       }
 
       await createMessage({
         dateToShow: todayDate,
-        message: bulletinMessageParts.join('\n'),
+        message: bulletinMessageParts.join("\n"),
         team,
         dismissible: true,
       });

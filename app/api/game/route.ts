@@ -33,16 +33,25 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { game: { actionPoints, team }, userId } = dbUser;
+  const {
+    game: { actionPoints, team },
+    userId,
+  } = dbUser;
 
   if (actionPoints === 0) {
-    return new Response(JSON.stringify({ error: 'Not enough action points' }), {
+    return new Response(JSON.stringify({ error: "Not enough action points" }), {
       status: 400,
     });
   }
 
   try {
-    const result = await processGame(userId, team, actionPoints, payload.game, payload);
+    const result = await processGame(
+      userId,
+      team,
+      actionPoints,
+      payload.game,
+      payload,
+    );
 
     return new Response(JSON.stringify(result || {}), {
       status: 202,

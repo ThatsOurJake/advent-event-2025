@@ -5,7 +5,7 @@ import { getUser } from "../../../data/user";
 
 export async function GET(
   _req: NextRequest,
-  { params }: RouteContext<'/api/core-stats/[team]'>
+  { params }: RouteContext<"/api/core-stats/[team]">,
 ) {
   const { team } = await params;
   const session = await auth();

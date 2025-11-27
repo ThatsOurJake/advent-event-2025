@@ -1,6 +1,14 @@
-export type FetchCallback<T> = (errored: boolean, resp?: T, error?: Error) => void;
+export type FetchCallback<T> = (
+  errored: boolean,
+  resp?: T,
+  error?: Error,
+) => void;
 
-export const regularlyFetch = <T>(url: string, interval: number, callback: FetchCallback<T>): number => {
+export const regularlyFetch = <T>(
+  url: string,
+  interval: number,
+  callback: FetchCallback<T>,
+): number => {
   let isFetching = false;
 
   const initialFetch = async () => {
@@ -19,7 +27,7 @@ export const regularlyFetch = <T>(url: string, interval: number, callback: Fetch
     }
 
     isFetching = false;
-  }
+  };
 
   initialFetch();
 

@@ -9,7 +9,7 @@ const agent = new ProxyAgent();
 
 export async function GET(
   _req: NextRequest,
-  { params }: RouteContext<'/api/avatar/[id]'>
+  { params }: RouteContext<"/api/avatar/[id]">,
 ) {
   const { id } = await params;
 

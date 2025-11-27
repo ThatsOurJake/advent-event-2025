@@ -5,7 +5,7 @@ export const getServerUser = async () => {
   const session = await auth();
 
   if (!session) {
-    throw new Error('User not logged in');
+    throw new Error("User not logged in");
   }
 
   const sessionUser = session.user!;

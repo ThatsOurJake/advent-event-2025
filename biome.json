@@ -27,6 +27,9 @@
       },
       "performance": {
         "noImgElement": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
       }
     },
     "domains": {
