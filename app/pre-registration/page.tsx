@@ -54,7 +54,7 @@ const PreRegistrationPage = async () => {
               </span>
             </li>
             <li>
-              You're team has their own private teams group{" "}
+              Your team has their own private teams group{" "}
               <a
                 href={game.teamsChannels[team]}
                 target="_blank"
