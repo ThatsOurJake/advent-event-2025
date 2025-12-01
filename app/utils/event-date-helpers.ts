@@ -40,5 +40,5 @@ export const isStartDay = (): boolean => {
   const [startDay, startMonth, startYear] = startDate.split("/").map(Number);
   const start = new Date(startYear, startMonth - 1, startDay);
 
-  return now === start;
+  return now.toDateString() === start.toDateString();
 };
