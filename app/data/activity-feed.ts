@@ -81,8 +81,8 @@ export const getActivityItems = async (
       ...item,
       user: user
         ? {
-            name: user.details.name,
-          }
+          name: user.details.name,
+        }
         : undefined,
     };
   });
@@ -140,4 +140,20 @@ export const getUsersActivity = async (userId: string) => {
     .find({ userId })
     .sort({ timestamp: "asc" })
     .toArray();
+};
+
+export const migrateActivityItems = async (oldUserId: string, newUserId: string) => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<ActivityItem>(ACTIVITY_COLLECTION);
+
+  const { modifiedCount } = await collection.updateMany(
+    { userId: oldUserId },
+    { $set: { userId: newUserId } }
+  );
+
+  console.log(`Migrated: ${modifiedCount} activity items`);
+
+  return modifiedCount;
 };

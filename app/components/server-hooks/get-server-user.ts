@@ -10,7 +10,7 @@ export const getServerUser = async () => {
 
   const sessionUser = session.user!;
 
-  const user = await getUser(sessionUser.id!);
+  const user = await getUser(sessionUser.id!, sessionUser.name!);
 
   if (!user) {
     const newUser = await createUser({

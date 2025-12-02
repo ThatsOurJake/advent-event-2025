@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import type { ActivityItemDTO } from "../data/get-activity-feed";
+import type { ActivityItemDTO } from "../data/activity-feed";
 import { regularlyFetch } from "../utils/regularly-fetch";
 import { AppContext } from "./page-wrapper";
 

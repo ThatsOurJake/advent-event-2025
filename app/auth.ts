@@ -9,12 +9,23 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       clientId: envStr("AUTH_MICROSOFT_ENTRA_ID_ID", ""),
       clientSecret: envStr("AUTH_MICROSOFT_ENTRA_ID_SECRET", ""),
       issuer: envStr("AUTH_MICROSOFT_ENTRA_ID_ISSUER", ""),
+      authorization: {
+        params: {
+          scope: "openid profile email",
+        },
+      },
     }),
   ],
   callbacks: {
+    jwt: async ({ token, account, profile }) => {
+      if (account && profile) {
+        token.oid = profile.oid;
+      }
+      return token;
+    },
     session: async ({ session, token }) => {
-      if (token.sub) {
-        session.user.id = token.sub;
+      if (token.oid) {
+        session.user.id = token.oid as string;
       }
 
       return session;

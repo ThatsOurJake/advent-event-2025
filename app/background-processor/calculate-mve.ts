@@ -1,6 +1,6 @@
 import game from "../../game.json";
 import { TEAMS_ARR } from "../constants";
-import { getAchievementActivities } from "../data/get-activity-feed";
+import { getAchievementActivities } from "../data/activity-feed";
 import { createMVEEntry, type MostValuedElvesAward } from "../data/mve";
 import type { teams } from "../shared-types";
 

@@ -5,7 +5,7 @@ import { WrapAvatar } from "../components/avatars/wrap";
 import { StoredPerDayGraph } from "../components/charts/stored-per-day";
 import { UserContributionsGraph } from "../components/charts/user-contributions";
 import { getServerUser } from "../components/server-hooks/get-server-user";
-import { getUsersActivity } from "../data/get-activity-feed";
+import { getUsersActivity } from "../data/activity-feed";
 import { getLatestMVE } from "../data/mve";
 import { getSnapshots, getTeamScores } from "../data/teams";
 import { mapTeamToColour, mapTeamToName } from "../utils/map-team";

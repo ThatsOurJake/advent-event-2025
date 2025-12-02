@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { auth } from "../../../auth";
-import { getActivityItems } from "../../../data/get-activity-feed";
+import { getActivityItems } from "../../../data/activity-feed";
 import { getUser } from "../../../data/user";
 
 export async function GET(

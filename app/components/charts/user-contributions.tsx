@@ -1,7 +1,7 @@
 "use client";
 
 import { Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
-import type { ActivityItem } from "../../data/get-activity-feed";
+import type { ActivityItem } from "../../data/activity-feed";
 
 interface UserContributionsGraphProps {
   data: ActivityItem[];

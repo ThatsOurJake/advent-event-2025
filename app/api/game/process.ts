@@ -6,7 +6,7 @@ import {
   KEY_MOUND_STORED,
   KEY_ORE_STORED,
 } from "../../constants";
-import { addActivityItem } from "../../data/get-activity-feed";
+import { addActivityItem } from "../../data/activity-feed";
 import { updateTeamStats } from "../../data/teams";
 import { decrUserActionPoints } from "../../data/user";
 import redis from "../../services/redis";

@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { WithId } from "mongodb";
+import type { Collection, WithId } from "mongodb";
 import { STARTING_AP, USER_COLLECTION } from "../constants";
 import { client, connect } from "../services/mongo";
 import redis from "../services/redis";
 import type { teams } from "../shared-types";
+import { migrateActivityItems } from "./activity-feed";
+import { migrateMVEs } from "./mve";
 
 const assignTeamScript = fs.readFileSync(
   path.resolve("app", "lua", "assign_team.lua"),
@@ -55,15 +57,49 @@ export const createUser = async ({ name, sub }: CreateUserOpts) => {
   console.error(`Failed to insert user`);
 };
 
-export const getUser = async (sub: string): Promise<User | null> => {
+const migrateUser = async (collection: Collection<User>, oid: string, name: string) => {
+  // Migration put in place due to bug where users could re-log to move teams as the sub from the JWT wasn't globally unique
+  const user = (await collection.findOne({
+    details: {
+      name,
+    },
+  })) as WithId<User>;
+
+  const oldUserId = user.userId;
+
+  if (user) {
+    console.log(`Migrating user to new oid.`);
+
+    await collection.updateOne(
+      { details: { name } },
+      { $set: { userId: oid } },
+    );
+
+    user.userId = oid;
+
+    await migrateActivityItems(oldUserId, oid);
+    await migrateMVEs(oldUserId, oid);
+  }
+
+  return user;
+};
+
+export const getUser = async (
+  oid: string,
+  name: string,
+): Promise<User | null> => {
   await connect();
 
   const db = client.db();
   const collection = db.collection<User>(USER_COLLECTION);
 
-  const user = (await collection.findOne({
-    userId: sub,
+  let user = (await collection.findOne({
+    userId: oid,
   })) as WithId<User>;
+
+  if (!user) {
+    user = await migrateUser(collection, oid, name);
+  }
 
   if (!user) {
     return null;

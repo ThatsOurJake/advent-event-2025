@@ -77,6 +77,46 @@ export const createMVEEntry = async (
   console.error(`Failed to insert MVE`);
 };
 
+export const migrateMVEs = async (oldId: string, newId: string) => {
+  await connect();
+
+  const db = client.db();
+  const collection = db.collection<MostValuedElves>(MVE_COLLECTION);
+
+  await collection.updateMany(
+    {
+      $or: [
+        { "awards.mine.userId": oldId },
+        { "awards.forge.userId": oldId },
+        { "awards.wrap.userId": oldId },
+        { "awards.sleigh.userId": oldId },
+      ],
+    },
+    {
+      $set: {
+        "awards.$[elem].mine.userId": newId,
+        "awards.$[elem].forge.userId": newId,
+        "awards.$[elem].wrap.userId": newId,
+        "awards.$[elem].sleigh.userId": newId,
+      },
+    },
+    {
+      arrayFilters: [
+        {
+          $or: [
+            { "elem.mine.userId": oldId },
+            { "elem.forge.userId": oldId },
+            { "elem.wrap.userId": oldId },
+            { "elem.sleigh.userId": oldId },
+          ],
+        },
+      ],
+    },
+  );
+
+  console.log('Migrated MVEs');
+};
+
 export const getLatestMVE = async () => {
   await connect();
 
