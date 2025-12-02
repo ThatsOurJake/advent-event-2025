@@ -188,7 +188,7 @@ export const processGame = async (
   game: validLocations,
   payload: object,
 ): Promise<object | undefined> => {
-  console.log(`Processing game: ${game} - ${payload}`);
+  console.log(`Processing game: ${game} - ${JSON.stringify(payload)}`);
 
   if (game === "mine") {
     return processMineGame(
