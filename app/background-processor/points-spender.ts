@@ -64,7 +64,7 @@ export const spendPoints = async (team: teams, actionPoints: number) => {
       `Team: ${team} - Activity: ${activity} - Was Success: ${successful}`,
     );
 
-    if (successful) {
+    if (activity && successful) {
       successActions.push(activity);
       // I think there is enough randomness with the changing uuid & action points that we can keep this as 'sleigh'
       const taskOutcome = calculateTaskOutcome(
