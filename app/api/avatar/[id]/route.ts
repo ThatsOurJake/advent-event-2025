@@ -13,22 +13,31 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  const resp = await client.get(
-    `https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=${id}&backgroundColor=d68851,d68851&scale=75`,
-    {
-      httpAgent: agent,
-      httpsAgent: agent,
-    },
-  );
+  try {
+    const resp = await client.get(
+      `https://api.dicebear.com/9.x/avataaars-neutral/svg?seed=${id}&backgroundColor=d68851,d68851&scale=75`,
+      {
+        httpAgent: agent,
+        httpsAgent: agent,
+      },
+    );
 
-  const { data, headers } = resp;
+    const { data, headers } = resp;
 
-  return new Response(data, {
-    status: resp.status,
-    statusText: resp.statusText,
-    headers: {
-      "content-type": headers["content-type"],
-      "Cache-Control": "max-age=432000",
-    },
-  });
+    return new Response(data, {
+      status: resp.status,
+      statusText: resp.statusText,
+      headers: {
+        "content-type": headers["content-type"],
+        "Cache-Control": "max-age=432000",
+      },
+    });
+  } catch (err) {
+    const error = err as Error;
+    console.error(error.message);
+
+    return new Response(undefined, {
+      status: 400
+    });
+  }
 }
