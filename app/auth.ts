@@ -24,6 +24,12 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return token;
     },
     session: async ({ session, token }) => {
+      // Use old sub from session for user if oid doesn't exist
+      // This is to help with the migration
+      if (token.sub && !token.oid) {
+        session.user.id = token.oid as string;
+      }
+
       if (token.oid) {
         session.user.id = token.oid as string;
       }
