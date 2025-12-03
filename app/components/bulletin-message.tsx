@@ -28,7 +28,9 @@ export const BulletinMessage = ({ data }: BulletinMessageProps) => {
 
     dismissedIds.push(id);
 
-    Cookies.set(COOKIE_BULLETINS_DISMISSED, dismissedIds.join("|"));
+    Cookies.set(COOKIE_BULLETINS_DISMISSED, dismissedIds.join("|"), {
+      expires: 30,
+    });
 
     if (ref.current) {
       ref.current.remove();
