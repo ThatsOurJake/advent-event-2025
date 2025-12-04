@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       ignore: [/api\/activity-feed/, /api\/core-stats/, /api\/location-stats/],
     },
   },
+  serverExternalPackages: ['pino'],
 };
 
 export default nextConfig;
