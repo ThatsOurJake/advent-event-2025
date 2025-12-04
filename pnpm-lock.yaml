@@ -9,31 +9,31 @@ importers:
   .:
     dependencies:
       '@types/cfenv':
-        specifier: ^1.2.4
+        specifier: 1.2.4
         version: 1.2.4
       '@types/js-cookie':
-        specifier: ^3.0.6
+        specifier: 3.0.6
         version: 3.0.6
       axios:
-        specifier: ^1.13.2
+        specifier: 1.13.2
         version: 1.13.2
       axios-cache-interceptor:
-        specifier: ^1.8.3
+        specifier: 1.8.3
         version: 1.8.3(axios@1.13.2)
       cfenv:
-        specifier: ^1.2.4
+        specifier: 1.2.4
         version: 1.2.4
       env-helpers:
-        specifier: ^1.2.0
+        specifier: 1.2.0
         version: 1.2.0
       ioredis:
-        specifier: ^5.8.2
+        specifier: 5.8.2
         version: 5.8.2
       js-cookie:
-        specifier: ^3.0.5
+        specifier: 3.0.5
         version: 3.0.5
       mongodb:
-        specifier: ^7.0.0
+        specifier: 7.0.0
         version: 7.0.0(socks@2.8.7)
       next:
         specifier: 16.0.1
@@ -42,19 +42,19 @@ importers:
         specifier: 5.0.0-beta.30
         version: 5.0.0-beta.30(next@16.0.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       next-logger:
-        specifier: ^5.0.2
+        specifier: 5.0.2
         version: 5.0.2(next@16.0.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(pino@10.1.0)
       node-cron:
-        specifier: ^4.2.1
+        specifier: 4.2.1
         version: 4.2.1
       phaser:
         specifier: 3.90.0
         version: 3.90.0
       pino:
-        specifier: ^10.1.0
+        specifier: 10.1.0
         version: 10.1.0
       proxy-agent:
-        specifier: ^6.5.0
+        specifier: 6.5.0
         version: 6.5.0
       react:
         specifier: 19.2.0
@@ -63,38 +63,38 @@ importers:
         specifier: 19.2.0
         version: 19.2.0(react@19.2.0)
       react-markdown:
-        specifier: ^10.1.0
+        specifier: 10.1.0
         version: 10.1.0(@types/react@19.2.2)(react@19.2.0)
       recharts:
-        specifier: ^3.4.1
+        specifier: 3.4.1
         version: 3.4.1(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react-is@19.2.0)(react@19.2.0)(redux@5.0.1)
       seed-random:
-        specifier: ^2.2.0
+        specifier: 2.2.0
         version: 2.2.0
     devDependencies:
       '@biomejs/biome':
         specifier: 2.2.0
         version: 2.2.0
       '@tailwindcss/postcss':
-        specifier: ^4
+        specifier: '4'
         version: 4.1.16
       '@types/node':
-        specifier: ^20
+        specifier: '20'
         version: 20.19.24
       '@types/react':
-        specifier: ^19
+        specifier: '19'
         version: 19.2.2
       '@types/react-dom':
-        specifier: ^19
+        specifier: '19'
         version: 19.2.2(@types/react@19.2.2)
       '@types/seed-random':
-        specifier: ^2.2.4
+        specifier: 2.2.4
         version: 2.2.4
       tailwindcss:
-        specifier: ^4
+        specifier: '4'
         version: 4.1.16
       typescript:
-        specifier: ^5
+        specifier: '5'
         version: 5.9.3
 
 packages:
@@ -1184,6 +1184,7 @@ packages:
   next@16.0.1:
     resolution: {integrity: sha512-e9RLSssZwd35p7/vOa+hoDFggUZIUbZhIUSLZuETCwrCVvxOs87NamoUzT+vbcNAL8Ld9GobBnWOA6SbV/arOw==}
     engines: {node: '>=20.9.0'}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
