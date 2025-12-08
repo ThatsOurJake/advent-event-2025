@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
   }
 
   const { user } = session;
-  const { id } = user!;
+  const { id, name } = user!;
 
-  const dbUser = await getUser(id!);
+  const dbUser = await getUser(id!, name!);
 
   if (!dbUser) {
     return new Response(null, {

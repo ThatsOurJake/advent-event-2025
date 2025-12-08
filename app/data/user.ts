@@ -59,15 +59,15 @@ export const createUser = async ({ name, sub }: CreateUserOpts) => {
 
 const migrateUser = async (collection: Collection<User>, oid: string, name: string) => {
   // Migration put in place due to bug where users could re-log to move teams as the sub from the JWT wasn't globally unique
-  const user = (await collection.findOne({
+  const user = await collection.findOne({
     details: {
       name,
     },
-  })) as WithId<User>;
-
-  const oldUserId = user.userId;
+  });
 
   if (user) {
+    const oldUserId = user.userId;
+
     console.log(`Migrating user to new oid.`);
 
     await collection.updateOne(
@@ -93,9 +93,9 @@ export const getUser = async (
   const db = client.db();
   const collection = db.collection<User>(USER_COLLECTION);
 
-  let user = (await collection.findOne({
+  let user = await collection.findOne({
     userId: oid,
-  })) as WithId<User>;
+  });
 
   if (!user) {
     user = await migrateUser(collection, oid, name);

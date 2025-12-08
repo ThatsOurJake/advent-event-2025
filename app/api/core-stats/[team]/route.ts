@@ -16,9 +16,9 @@ export async function GET(
     });
   }
 
-  const { id } = session.user;
+  const { id, name } = session.user;
 
-  const user = await getUser(id!);
+  const user = await getUser(id!, name!);
 
   if (user?.game.team !== team) {
     return new Response(null, {
