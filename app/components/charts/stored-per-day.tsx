@@ -7,7 +7,7 @@ import { mapTeamToColour, mapTeamToName } from "../../utils/map-team";
 interface StoredPerDayGraphProps {
   data: Snapshot[];
   statToShow: "ore" | "giftMounds" | "wrappedGifts" | "score";
-  title: string;
+  title?: string;
 }
 
 interface GraphData {
@@ -67,7 +67,7 @@ export const StoredPerDayGraph = ({
 
   return (
     <div className="w-full h-full flex flex-col">
-      <p className="text-center font-bold">{title}</p>
+      {title && <p className="text-center font-bold">{title}</p>}
       <div className="grow min-h-0">
         <LineChart
           responsive

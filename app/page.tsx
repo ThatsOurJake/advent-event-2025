@@ -6,6 +6,7 @@ import { MineAvatar } from "./components/avatars/miner";
 import { SleighAvatar } from "./components/avatars/sleigh";
 import { WrapAvatar } from "./components/avatars/wrap";
 import { ChoreList } from "./components/chores-list";
+import { FactionStats } from "./components/faction-stats";
 import { PageWrapper } from "./components/page-wrapper";
 import { getServerUser } from "./components/server-hooks/get-server-user";
 import { COOKIE_BULLETINS_DISMISSED } from "./constants";
@@ -15,6 +16,7 @@ import { getTeamScores } from "./data/teams";
 import {
   isAfterEventDate,
   isBeforeEventDate,
+  shouldHideScorePanel,
 } from "./utils/event-date-helpers";
 import { mapTeamToColour, mapTeamToName } from "./utils/map-team";
 
@@ -57,35 +59,7 @@ const Home = async () => {
       bulletinBoardMessages={JSON.parse(JSON.stringify(filteredMessages))}
     >
       <ChoreList />
-      <div className="bg-white m-2 p-2 border-2 rounded">
-        <p className="text-center font-bold text-2xl mb-2">
-          Faction Statistics
-        </p>
-        <div className="grid grid-cols-3">
-          {teamScores.map((s) => {
-            const theme = mapTeamToColour(s.name);
-            return (
-              <div
-                key={`score:${s.name}`}
-                className={`${theme.background} m-1 p-2 rounded border-2`}
-              >
-                <p
-                  className={`text-xl font-bold text-center ${theme.teamLinkColour}`}
-                >
-                  {mapTeamToName(s.name)}
-                </p>
-                <p className="text-center">Current Score: {s.stats.score}</p>
-              </div>
-            );
-          })}
-        </div>
-        <Link
-          href="/teams"
-          className="text-center text-purple-600 hover:underline"
-        >
-          <p className="py-1">View Team Members</p>
-        </Link>
-      </div>
+      {!shouldHideScorePanel() && <FactionStats teamScores={teamScores} />}
       {mve && teamMves && (
         <div className="bg-yellow-100 m-2 p-2 border-2 rounded">
           <p className="text-2xl font-bold text-center">

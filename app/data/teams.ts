@@ -64,12 +64,12 @@ export const getTeam = async (team: teams): Promise<Team | null> => {
 
 type DotNotation<T, Prefix extends string = ""> = {
   [K in keyof T]: T[K] extends object
-    ? K extends string
-      ? DotNotation<T[K], `${Prefix}${K}.`>
-      : never
-    : K extends string
-      ? `${Prefix}${K}`
-      : never;
+  ? K extends string
+  ? DotNotation<T[K], `${Prefix}${K}.`>
+  : never
+  : K extends string
+  ? `${Prefix}${K}`
+  : never;
 }[keyof T];
 
 type TeamStatsPaths = DotNotation<Team["stats"], "stats.">;
@@ -114,7 +114,14 @@ export const setTeamStat = async (
   );
 };
 
-export const getTeamScores = async () => {
+export interface TeamScores {
+  name: teams;
+  stats: {
+    score: number;
+  }
+}
+
+export const getTeamScores = async (): Promise<TeamScores[]> => {
   await connect();
 
   const db = client.db();

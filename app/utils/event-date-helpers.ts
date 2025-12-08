@@ -1,6 +1,6 @@
 import game from "../../game.json";
 
-const { endDate, startDate } = game;
+const { endDate, startDate, hideScoresFrom } = game;
 
 export const isWithinEventDate = (): boolean => {
   const now = new Date();
@@ -42,3 +42,12 @@ export const isStartDay = (): boolean => {
 
   return now.toDateString() === start.toDateString();
 };
+
+export const shouldHideScorePanel = (): boolean => {
+  const now = new Date();
+
+  const [day, month, year] = hideScoresFrom.split("/").map(Number);
+  const date = new Date(year, month - 1, day);
+
+  return now >= date;
+}

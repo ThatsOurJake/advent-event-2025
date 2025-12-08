@@ -75,15 +75,26 @@ const GraphsPage = async () => {
           </div>
         </div>
       </div>
-      <div className="bg-white rounded border-2 p-2">
-        <p className="text-center font-bold">Your contributions per day</p>
-        <div className="w-1/2 mx-auto aspect-video my-2">
-          <UserContributionsGraph data={sanitisedUserActivity} />
+      <div className="bg-white rounded border-2 p-2 grid grid-cols-2">
+        <div>
+          <p className="text-center font-bold">Your contributions per day</p>
+          <div className="aspect-video">
+            <UserContributionsGraph data={sanitisedUserActivity} />
+          </div>
+        </div>
+        <div>
+          <p className="text-center font-bold">Team Scores per day</p>
+          <div className="aspect-video">
+            <StoredPerDayGraph
+              data={sanitisedTeamSnapshots}
+              statToShow="score"
+            />
+          </div>
         </div>
       </div>
       <div className="bg-white rounded border-2 p-2">
-        <p className="text-center font-bold">Team contributions per day</p>
-        <div className="grid grid-cols-2">
+        <p className="text-center font-bold mb-2">Team contributions per day</p>
+        <div className="grid grid-cols-3">
           <div className="aspect-video p-1">
             <StoredPerDayGraph
               data={sanitisedTeamSnapshots}
@@ -103,13 +114,6 @@ const GraphsPage = async () => {
               data={sanitisedTeamSnapshots}
               statToShow="wrappedGifts"
               title="Wrapped gifts stored per day"
-            />
-          </div>
-          <div className="aspect-video p-1">
-            <StoredPerDayGraph
-              data={sanitisedTeamSnapshots}
-              statToShow="score"
-              title="Overall Score per day"
             />
           </div>
         </div>
