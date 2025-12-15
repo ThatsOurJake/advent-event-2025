@@ -9,7 +9,7 @@ export const isWithinEventDate = (): boolean => {
   const [endDay, endMonth, endYear] = endDate.split("/").map(Number);
 
   const start = new Date(startYear, startMonth - 1, startDay);
-  const end = new Date(endYear, endMonth - 1, endDay);
+  const end = new Date(endYear, endMonth - 1, endDay, 23, 59);
 
   return now >= start && now <= end;
 };
